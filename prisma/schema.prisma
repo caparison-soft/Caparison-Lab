@@ -1,0 +1,154 @@
+// Caparison Lab - Database Schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Models ────────────────────────────────────
+
+model User {
+  id                 String         @id @default(uuid())
+  supabaseId         String         @unique @map("supabase_id")
+  email              String         @unique
+  username           String         @unique
+  avatarUrl          String?        @map("avatar_url")
+  role               Role           @default(USER)
+  credits            Int            @default(0)
+  subscriptionTier   Tier           @default(FREE) @map("subscription_tier")
+  subscriptionExpiry DateTime?      @map("subscription_expiry")
+  createdAt          DateTime       @default(now()) @map("created_at")
+  updatedAt          DateTime       @updatedAt @map("updated_at")
+
+  subscriptions      Subscription[]
+  transactions       Transaction[]
+  generations        Generation[]
+
+  @@map("users")
+}
+
+model App {
+  id            String       @id @default(uuid())
+  name          String
+  slug          String       @unique
+  description   String
+  shortDesc     String?      @map("short_desc")
+  category      AppCategory
+  appType       AppType      @default(TOOL) @map("app_type")
+  iconUrl       String?      @map("icon_url")
+  coverImageUrl String?      @map("cover_image_url")
+  creditCost    Int          @default(0) @map("credit_cost")
+  isFree        Boolean      @default(false) @map("is_free")
+  isActive      Boolean      @default(true) @map("is_active")
+  configJson    Json?        @map("config_json")
+  usageCount    Int          @default(0) @map("usage_count")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  transactions  Transaction[]
+  generations   Generation[]
+
+  @@map("apps")
+}
+
+model Subscription {
+  id              String    @id @default(uuid())
+  userId          String    @map("user_id")
+  tier            Tier
+  creditsIncluded Int       @map("credits_included")
+  price           Float
+  startsAt        DateTime  @default(now()) @map("starts_at")
+  expiresAt       DateTime  @map("expires_at")
+  status          SubStatus @default(ACTIVE)
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+model Transaction {
+  id            String          @id @default(uuid())
+  userId        String          @map("user_id")
+  type          TransactionType
+  creditsAmount Int             @map("credits_amount")
+  moneyAmount   Float?          @map("money_amount")
+  description   String
+  appId         String?         @map("app_id")
+  createdAt     DateTime        @default(now()) @map("created_at")
+
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  app           App?            @relation(fields: [appId], references: [id], onDelete: SetNull)
+
+  @@map("transactions")
+}
+
+model Generation {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  appId       String    @map("app_id")
+  inputData   Json      @map("input_data")
+  outputUrl   String?   @map("output_url")
+  status      GenStatus @default(PENDING)
+  creditsUsed Int       @map("credits_used")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  app         App       @relation(fields: [appId], references: [id], onDelete: Cascade)
+
+  @@map("generations")
+}
+
+// ─── Enums ─────────────────────────────────────
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Tier {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+enum AppCategory {
+  IMAGE
+  VIDEO
+  AUDIO
+  TEXT
+  TOOL
+  UTILITY
+}
+
+enum AppType {
+  GENERATION
+  RECURRING_FREE
+  ONE_TIME
+  TOOL
+}
+
+enum SubStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+enum TransactionType {
+  CREDIT_PURCHASE
+  CREDIT_DEDUCTION
+  SUBSCRIPTION
+  REFUND
+  ADMIN_GRANT
+}
+
+enum GenStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
