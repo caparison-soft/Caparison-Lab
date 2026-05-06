@@ -8,14 +8,30 @@ export default function AutoPayToggle() {
   return (
     <button 
       onClick={() => setEnabled(!enabled)}
-      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-        enabled ? 'bg-indigo-500' : 'bg-zinc-600'
-      }`}
+      style={{
+        position: 'relative',
+        display: 'inline-flex',
+        height: '26px',
+        width: '48px',
+        alignItems: 'center',
+        borderRadius: '9999px',
+        transition: 'background 0.2s',
+        background: enabled ? '#6366f1' : '#3f3f46',
+        border: 'none',
+        cursor: 'pointer',
+        flexShrink: 0,
+      }}
     >
       <span 
-        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-          enabled ? 'translate-x-6' : 'translate-x-1'
-        }`}
+        style={{
+          display: 'inline-block',
+          height: '20px',
+          width: '20px',
+          borderRadius: '50%',
+          background: '#fff',
+          transition: 'transform 0.2s',
+          transform: enabled ? 'translateX(24px)' : 'translateX(4px)',
+        }}
       />
     </button>
   );

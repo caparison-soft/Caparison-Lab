@@ -24,14 +24,12 @@ export default async function DashboardPage() {
     dbUser = await prisma.user.findUnique({ where: { supabaseId: user.id } });
   }
 
-  // Fetch up to 2 active apps to feature
   const featuredApps = await prisma.app.findMany({
     where: { isActive: true },
     orderBy: { createdAt: 'desc' },
     take: 2,
   });
 
-  // Fetch recent generations
   let recentGenerations = [];
   let totalGenerations = 0;
   if (dbUser) {
@@ -46,127 +44,142 @@ export default async function DashboardPage() {
     });
   }
 
-  const categoryColors = {
-    IMAGE: 'badge-primary',
-    VIDEO: 'badge-info',
-    AUDIO: 'badge-warning',
-    TEXT: 'badge-success',
-    TOOL: 'badge-info',
-    UTILITY: 'badge-warning',
+  // Shared styles
+  const cardStyle = {
+    background: 'var(--glass-bg)',
+    border: '1px solid var(--glass-border)',
+    borderRadius: '16px',
+    backdropFilter: 'blur(20px)',
+    transition: 'all 0.25s ease',
   };
 
+  const statIconStyle = (color) => ({
+    width: '48px',
+    height: '48px',
+    borderRadius: '50%',
+    background: `${color}15`,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: color,
+    flexShrink: 0,
+  });
+
   return (
-    <div className="animate-fade-in stagger">
-      
+    <div>
       {/* Welcome Banner */}
-      <div className="card bg-gradient-to-r from-indigo-900/40 to-purple-900/40 border-indigo-500/20 mb-8 overflow-hidden relative">
-        <div className="absolute top-0 right-0 p-8 opacity-20 pointer-events-none">
-          <svg width="200" height="200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <div style={{
+        ...cardStyle,
+        background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.1))',
+        border: '1px solid rgba(99,102,241,0.2)',
+        padding: '40px',
+        marginBottom: '32px',
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        <div style={{ position: 'absolute', top: 0, right: 0, padding: '32px', opacity: 0.15, pointerEvents: 'none' }}>
+          <svg width="180" height="180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
         </div>
-        <div className="card-body relative z-10 sm:p-10">
-          <h2 className="text-3xl font-bold mb-2">Welcome back to Caparison Lab</h2>
-          <p className="text-indigo-200 mb-6 max-w-2xl">
+        <div style={{ position: 'relative', zIndex: 10 }}>
+          <h2 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '12px' }}>Welcome back to Caparison Lab</h2>
+          <p style={{ color: '#c7d2fe', marginBottom: '24px', maxWidth: '600px', lineHeight: 1.6 }}>
             You have {dbUser?.credits ?? 0} credits available. Explore our new AI tools or use your free recurring utilities to enhance your workflow.
           </p>
-          <div className="flex flex-wrap gap-4">
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
             <Link href="/apps" className="btn btn-primary">Browse Apps</Link>
-            <Link href="/credits" className="btn btn-secondary">Get More Credits</Link>
+            <Link href="/billing" className="btn btn-secondary">Get More Credits</Link>
           </div>
         </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="card card-hover">
-          <div className="card-body flex items-center justify-between">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', marginBottom: '32px' }}>
+        <div style={{ ...cardStyle, padding: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p className="text-zinc-400 text-sm font-medium mb-1">Available Credits</p>
-              <h3 className="text-3xl font-bold text-white">{dbUser?.credits ?? 0}</h3>
+              <p style={{ color: '#a1a1aa', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>Available Credits</p>
+              <h3 style={{ fontSize: '32px', fontWeight: 700 }}>{dbUser?.credits ?? 0}</h3>
             </div>
-            <div className="w-12 h-12 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-500">
+            <div style={statIconStyle('#eab308')}>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
             </div>
           </div>
         </div>
         
-        <div className="card card-hover">
-          <div className="card-body flex items-center justify-between">
+        <div style={{ ...cardStyle, padding: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p className="text-zinc-400 text-sm font-medium mb-1">Total Generations</p>
-              <h3 className="text-3xl font-bold text-white">{totalGenerations}</h3>
+              <p style={{ color: '#a1a1aa', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>Total Generations</p>
+              <h3 style={{ fontSize: '32px', fontWeight: 700 }}>{totalGenerations}</h3>
             </div>
-            <div className="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+            <div style={statIconStyle('#10b981')}>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
             </div>
           </div>
         </div>
 
-        <div className="card card-hover">
-          <div className="card-body flex items-center justify-between">
+        <div style={{ ...cardStyle, padding: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p className="text-zinc-400 text-sm font-medium mb-1">Current Plan</p>
-              <h3 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">{dbUser?.subscriptionTier ?? 'Free'}</h3>
+              <p style={{ color: '#a1a1aa', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>Current Plan</p>
+              <h3 style={{ fontSize: '32px', fontWeight: 700, background: 'linear-gradient(90deg, #818cf8, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{dbUser?.subscriptionTier ?? 'Free'}</h3>
             </div>
-            <div className="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500">
+            <div style={statIconStyle('#a855f7')}>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Recent Apps */}
-        <div className="lg:col-span-2">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold">Featured Apps</h3>
-            <Link href="/apps" className="text-sm text-indigo-400 hover:text-indigo-300 font-medium">View all</Link>
+      {/* Bottom Section: Featured Apps + Recent Generations */}
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '32px' }}>
+        {/* Featured Apps */}
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 700 }}>Featured Apps</h3>
+            <Link href="/apps" style={{ fontSize: '14px', color: '#818cf8', fontWeight: 500 }}>View all</Link>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
             {featuredApps.length === 0 ? (
-              <div className="col-span-2 p-8 text-center border border-white/5 rounded-xl bg-white/5">
-                <p className="text-zinc-400">No apps available yet.</p>
+              <div style={{ gridColumn: 'span 2', padding: '40px', textAlign: 'center', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', background: 'rgba(255,255,255,0.03)' }}>
+                <p style={{ color: '#a1a1aa' }}>No apps available yet.</p>
               </div>
             ) : (
               featuredApps.map((app) => (
-                <Link key={app.id} href={`/apps/${app.slug}`} className="card card-hover overflow-hidden flex flex-col h-full cursor-pointer group">
-                  <div className="h-32 bg-zinc-800 relative">
-                    <div 
-                      className="absolute inset-0 bg-gradient-to-br from-indigo-900/50 to-purple-900/50 transition-transform duration-500 group-hover:scale-105"
-                      style={{
-                        backgroundImage: app.coverImageUrl ? `url(${app.coverImageUrl})` : undefined,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center'
-                      }}
-                    ></div>
-                    <div className="absolute top-3 right-3">
-                      {app.isFree ? (
-                        <span className="badge badge-free">Free</span>
-                      ) : (
-                        <span className={`badge ${categoryColors[app.category] || 'badge-primary'}`}>{app.category}</span>
-                      )}
+                <Link key={app.id} href={`/apps/${app.slug}`} style={{ ...cardStyle, overflow: 'hidden', display: 'flex', flexDirection: 'column', cursor: 'pointer', textDecoration: 'none', color: 'inherit' }}>
+                  <div style={{ height: '128px', background: '#1a1a24', position: 'relative' }}>
+                    <div style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: app.coverImageUrl ? `url(${app.coverImageUrl})` : 'linear-gradient(135deg, rgba(99,102,241,0.3), rgba(139,92,246,0.3))',
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    }}></div>
+                    <div style={{ position: 'absolute', top: '12px', right: '12px' }}>
+                      <span className={`badge ${app.isFree ? 'badge-free' : 'badge-primary'}`}>{app.isFree ? 'Free' : app.category}</span>
                     </div>
                   </div>
-                  <div className="card-body p-5 flex-1 flex flex-col">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 overflow-hidden" style={{ border: '1px solid var(--glass-border)' }}>
+                  <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: 'rgba(99,102,241,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid var(--glass-border)', overflow: 'hidden' }}>
                         {app.iconUrl ? (
-                          <img src={app.iconUrl} alt={app.name} className="w-full h-full object-cover" />
+                          <img src={app.iconUrl} alt={app.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         ) : (
-                          <span className="text-lg">🤖</span>
+                          <span style={{ fontSize: '18px' }}>🤖</span>
                         )}
                       </div>
                       <div>
-                        <h4 className="font-bold text-white leading-tight">{app.name}</h4>
-                        <p className="text-xs text-zinc-400">
+                        <h4 style={{ fontWeight: 700, fontSize: '15px', lineHeight: 1.3 }}>{app.name}</h4>
+                        <p style={{ fontSize: '12px', color: '#a1a1aa', marginTop: '2px' }}>
                           {app.isFree ? '0 Credits' : `${app.creditCost} Credits / Use`}
                         </p>
                       </div>
                     </div>
-                    <p className="text-sm text-zinc-400 line-clamp-2 mb-4 flex-1">
+                    <p style={{ fontSize: '14px', color: '#a1a1aa', marginBottom: '16px', flex: 1, lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                       {app.shortDesc || app.description}
                     </p>
-                    <button className="btn btn-secondary w-full text-sm">Open App</button>
+                    <button className="btn btn-secondary" style={{ width: '100%', fontSize: '14px' }}>Open App</button>
                   </div>
                 </Link>
               ))
@@ -174,36 +187,36 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Recent History */}
+        {/* Recent Generations */}
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold">Recent Generations</h3>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 700 }}>Recent Generations</h3>
           </div>
           
-          <div className="card">
-            <div className="flex flex-col">
+          <div style={cardStyle}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
               {recentGenerations.length === 0 ? (
-                 <div className="p-8 text-center">
-                   <p className="text-zinc-500 text-sm">No generations yet.</p>
+                 <div style={{ padding: '40px', textAlign: 'center' }}>
+                   <p style={{ color: '#71717a', fontSize: '14px' }}>No generations yet.</p>
                  </div>
               ) : (
                 recentGenerations.map((gen) => (
-                  <div key={gen.id} className="p-4 border-b border-white/5 last:border-0 flex items-center gap-4 hover:bg-white/5 transition-colors cursor-pointer">
-                    <div className="w-12 h-12 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center shrink-0 overflow-hidden">
+                  <div key={gen.id} style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', transition: 'background 0.15s' }}>
+                    <div style={{ width: '44px', height: '44px', borderRadius: '10px', background: 'rgba(99,102,241,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
                       {gen.app.iconUrl ? (
-                        <img src={gen.app.iconUrl} alt={gen.app.name} className="w-full h-full object-cover" />
+                        <img src={gen.app.iconUrl} alt={gen.app.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
-                        <span className="text-xl">✨</span>
+                        <span style={{ fontSize: '20px' }}>✨</span>
                       )}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm text-white truncate">
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontWeight: 500, fontSize: '14px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {gen.inputData?.prompt ? `"${gen.inputData.prompt}"` : 'Executed App'}
                       </p>
-                      <p className="text-xs text-zinc-500 truncate">{gen.app.name} • {new Date(gen.createdAt).toLocaleDateString()}</p>
+                      <p style={{ fontSize: '12px', color: '#71717a', marginTop: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{gen.app.name} • {new Date(gen.createdAt).toLocaleDateString()}</p>
                     </div>
-                    <div className="text-right">
-                      <span className="text-xs font-semibold text-red-400">
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ fontSize: '13px', fontWeight: 600, color: '#f87171' }}>
                         {gen.creditsUsed > 0 ? `-${gen.creditsUsed}` : 'Free'}
                       </span>
                     </div>
@@ -211,8 +224,8 @@ export default async function DashboardPage() {
                 ))
               )}
             </div>
-            <div className="p-3 border-t border-white/5 text-center bg-black/20">
-              <Link href="/history" className="text-xs text-zinc-400 hover:text-white font-medium">View all history</Link>
+            <div style={{ padding: '14px', borderTop: '1px solid rgba(255,255,255,0.05)', textAlign: 'center', background: 'rgba(0,0,0,0.2)' }}>
+              <Link href="/history" style={{ fontSize: '13px', color: '#a1a1aa', fontWeight: 500 }}>View all history</Link>
             </div>
           </div>
         </div>
