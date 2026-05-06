@@ -45,30 +45,74 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 h-screen border-r border-white/5 bg-secondary flex flex-col fixed left-0 top-0 z-40 hidden md:flex">
-      <div className="h-20 flex items-center px-6 border-b border-white/5">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-[0_0_10px_rgba(139,92,246,0.5)]">
+    <aside style={{
+      width: '260px',
+      height: '100vh',
+      position: 'fixed',
+      left: 0,
+      top: 0,
+      zIndex: 40,
+      display: 'flex',
+      flexDirection: 'column',
+      background: 'var(--bg-secondary)',
+      borderRight: '1px solid rgba(255,255,255,0.05)',
+    }}>
+      <div style={{ 
+        height: '80px', 
+        display: 'flex', 
+        alignItems: 'center', 
+        padding: '0 24px', 
+        borderBottom: '1px solid rgba(255,255,255,0.05)' 
+      }}>
+        <Link href="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: '8px',
+            background: 'linear-gradient(135deg, #6366f1, #9333ea)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontWeight: 700,
+            color: 'white',
+            fontSize: '14px',
+            boxShadow: '0 0 10px rgba(139,92,246,0.5)',
+          }}>
             C
           </div>
-          <span className="font-bold text-lg tracking-tight">Caparison Lab</span>
+          <span style={{ fontWeight: 700, fontSize: '18px', letterSpacing: '-0.02em' }}>Caparison Lab</span>
         </Link>
       </div>
 
-      <nav className="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-2">
+      <nav style={{ 
+        flex: 1, 
+        overflowY: 'auto', 
+        padding: '24px 16px', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: '4px' 
+      }}>
         {navLinks.map((link) => {
           const isActive = pathname === link.href || pathname.startsWith(`${link.href}/`);
           return (
             <Link 
               key={link.name} 
               href={link.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                isActive 
-                  ? 'bg-gradient-to-r from-indigo-500/10 to-purple-600/10 text-white font-medium border border-indigo-500/20' 
-                  : 'text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent'
-              }`}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '12px 16px',
+                borderRadius: '12px',
+                transition: 'all 0.2s',
+                fontSize: '14px',
+                fontWeight: isActive ? 500 : 400,
+                color: isActive ? '#fff' : '#a1a1aa',
+                background: isActive ? 'linear-gradient(90deg, rgba(99,102,241,0.12), rgba(139,92,246,0.08))' : 'transparent',
+                border: isActive ? '1px solid rgba(99,102,241,0.2)' : '1px solid transparent',
+              }}
             >
-              <div className={isActive ? 'text-indigo-400' : 'text-zinc-500'}>
+              <div style={{ color: isActive ? '#818cf8' : '#71717a' }}>
                 {link.icon}
               </div>
               {link.name}
@@ -77,12 +121,29 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="p-4 border-t border-white/5">
-        <div className="p-4 rounded-xl bg-gradient-to-br from-indigo-500/10 to-purple-600/10 border border-indigo-500/20 relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <h4 className="font-semibold text-sm mb-1 text-white relative z-10">Pro Plan</h4>
-          <p className="text-xs text-zinc-400 mb-3 relative z-10">You have 150 credits remaining</p>
-          <Link href="/billing" className="btn btn-sm w-full bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 border-none relative z-10">
+      <div style={{ padding: '16px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+        <div style={{
+          padding: '16px',
+          borderRadius: '12px',
+          background: 'linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.1))',
+          border: '1px solid rgba(99,102,241,0.2)',
+        }}>
+          <h4 style={{ fontWeight: 600, fontSize: '14px', marginBottom: '4px', color: '#fff' }}>Pro Plan</h4>
+          <p style={{ fontSize: '12px', color: '#a1a1aa', marginBottom: '12px' }}>You have 150 credits remaining</p>
+          <Link 
+            href="/billing" 
+            style={{
+              display: 'block',
+              textAlign: 'center',
+              padding: '8px 16px',
+              fontSize: '13px',
+              fontWeight: 600,
+              borderRadius: '8px',
+              background: 'rgba(99,102,241,0.2)',
+              color: '#a5b4fc',
+              transition: 'all 0.2s',
+            }}
+          >
             Top up credits
           </Link>
         </div>

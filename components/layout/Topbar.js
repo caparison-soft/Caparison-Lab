@@ -20,33 +20,69 @@ export default function Topbar() {
   };
 
   return (
-    <header className="h-20 border-b border-white/5 bg-primary/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-6">
-      <div className="flex items-center gap-4">
-        {/* Mobile menu button could go here */}
-        <h1 className="text-xl font-semibold hidden sm:block">Dashboard</h1>
+    <header style={{
+      height: '72px',
+      borderBottom: '1px solid rgba(255,255,255,0.05)',
+      background: 'rgba(9,9,11,0.85)',
+      backdropFilter: 'blur(16px)',
+      position: 'sticky',
+      top: 0,
+      zIndex: 30,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '0 32px',
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <h1 style={{ fontSize: '20px', fontWeight: 600 }}>Dashboard</h1>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         {/* Credits Badge */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm cursor-pointer hover:bg-white/10 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-400"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '8px 16px',
+          borderRadius: '9999px',
+          background: 'rgba(255,255,255,0.05)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          backdropFilter: 'blur(8px)',
+          cursor: 'pointer',
+          transition: 'all 0.2s',
+        }}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#facc15' }}><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
           {isLoading ? (
-            <span className="w-6 h-4 bg-white/20 animate-pulse rounded"></span>
+            <span style={{ width: '24px', height: '16px', background: 'rgba(255,255,255,0.2)', borderRadius: '4px' }}></span>
           ) : (
-            <span className="font-semibold text-sm">{data?.credits ?? 0}</span>
+            <span style={{ fontWeight: 600, fontSize: '14px' }}>{data?.credits ?? 0}</span>
           )}
-          <span className="text-xs text-zinc-400 uppercase font-medium">Credits</span>
+          <span style={{ fontSize: '11px', color: '#a1a1aa', textTransform: 'uppercase', fontWeight: 500, letterSpacing: '0.05em' }}>Credits</span>
         </div>
 
         {/* User Menu */}
-        <div className="flex items-center gap-3 pl-4 border-l border-white/10">
-          <button onClick={handleLogout} className="text-sm text-zinc-400 hover:text-white transition-colors">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingLeft: '16px', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>
+          <button onClick={handleLogout} style={{ fontSize: '14px', color: '#a1a1aa', background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s' }}>
             Logout
           </button>
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-emerald-500 p-[2px]">
-            <div className="w-full h-full bg-black rounded-full flex items-center justify-center overflow-hidden">
-              {/* <img src="avatar.jpg" alt="User" /> */}
-              <span className="font-bold text-sm">US</span>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #6366f1, #10b981)',
+            padding: '2px',
+          }}>
+            <div style={{
+              width: '100%',
+              height: '100%',
+              background: '#000',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              overflow: 'hidden',
+            }}>
+              <span style={{ fontWeight: 700, fontSize: '14px' }}>US</span>
             </div>
           </div>
         </div>
