@@ -3,9 +3,9 @@ import Topbar from '../../components/layout/Topbar';
 
 export default function DashboardLayout({ children }) {
   return (
-    <div className="min-h-screen bg-primary text-white">
+    <div className="min-h-screen bg-primary text-white flex">
       <Sidebar />
-      <div className="md:pl-64 flex flex-col min-h-screen relative w-full">
+      <div className="flex-1 flex flex-col min-h-screen relative w-full md:w-[calc(100%-256px)] md:ml-64">
         {/* Background mesh for dashboard */}
         <div className="absolute inset-0 z-0 pointer-events-none opacity-50" style={{ background: 'var(--gradient-mesh)' }}></div>
         
