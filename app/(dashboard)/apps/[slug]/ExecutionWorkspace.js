@@ -46,32 +46,52 @@ export default function ExecutionWorkspace({ app }) {
     }
   };
 
+  const cardStyle = {
+    background: 'var(--glass-bg)',
+    border: '1px solid var(--glass-border)',
+    borderRadius: '16px',
+    backdropFilter: 'blur(20px)',
+  };
+
   return (
-    <div className="card h-full min-h-[500px] flex flex-col relative overflow-hidden">
+    <div style={{ ...cardStyle, height: '100%', minHeight: '500px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
       {/* Background embellishment */}
-      <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
+      <div style={{ position: 'absolute', top: '0', right: '0', padding: '48px', opacity: 0.05, pointerEvents: 'none' }}>
         <svg width="300" height="300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
       </div>
       
-      <div className="card-header border-b border-white/5 bg-black/20 flex justify-between items-center">
-        <h3 className="font-bold">Workspace: {app.name}</h3>
+      <div style={{ padding: '20px 24px', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(0,0,0,0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h3 style={{ fontWeight: 700, fontSize: '18px' }}>Workspace: {app.name}</h3>
       </div>
       
-      <div className="card-body flex-1 flex flex-col p-6 relative z-10">
+      <div style={{ padding: '24px', flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 10 }}>
         {!result && (
-          <div className="flex-1 flex flex-col">
-            <label className="block text-sm font-medium text-zinc-400 mb-2">
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: '#a1a1aa', marginBottom: '8px' }}>
               Input Prompt
             </label>
             <textarea 
-              className="input w-full flex-1 bg-black/20 resize-none p-4 font-mono text-sm mb-4" 
+              style={{
+                width: '100%',
+                flex: 1,
+                background: 'rgba(0,0,0,0.2)',
+                border: '1px solid var(--glass-border)',
+                borderRadius: '12px',
+                resize: 'none',
+                padding: '16px',
+                fontFamily: 'monospace',
+                fontSize: '14px',
+                color: '#fafafa',
+                marginBottom: '16px',
+                outline: 'none',
+              }}
               placeholder="Describe what you want to generate..."
               value={inputData}
               onChange={(e) => setInputData(e.target.value)}
             />
             
             {error && (
-              <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm mb-4 flex items-center gap-2">
+              <div style={{ padding: '16px', borderRadius: '12px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171', fontSize: '14px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 {error}
               </div>
@@ -80,11 +100,28 @@ export default function ExecutionWorkspace({ app }) {
             <button 
               onClick={handleExecute} 
               disabled={isExecuting || (!inputData.trim() && app.appType !== 'UTILITY')}
-              className="btn btn-primary w-full shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] transition-all"
+              style={{
+                width: '100%',
+                padding: '16px',
+                borderRadius: '12px',
+                background: 'var(--gradient-primary)',
+                color: '#ffffff',
+                fontWeight: 700,
+                fontSize: '16px',
+                border: 'none',
+                cursor: (isExecuting || (!inputData.trim() && app.appType !== 'UTILITY')) ? 'not-allowed' : 'pointer',
+                opacity: (isExecuting || (!inputData.trim() && app.appType !== 'UTILITY')) ? 0.5 : 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                boxShadow: '0 0 20px rgba(99,102,241,0.3)',
+                transition: 'all 0.2s',
+              }}
             >
               {isExecuting ? (
                 <>
-                  <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                  <svg style={{ animation: 'spin 1s linear infinite', height: '20px', width: '20px', color: '#ffffff' }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle style={{ opacity: 0.25 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path style={{ opacity: 0.75 }} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                   Processing...
                 </>
               ) : (
@@ -98,29 +135,32 @@ export default function ExecutionWorkspace({ app }) {
         )}
 
         {result && (
-          <div className="flex-1 flex flex-col items-center justify-center text-center animate-fade-in">
-            <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-4">
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(16,185,129,0.2)', color: '#34d399', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
-            <h2 className="text-xl font-bold mb-2">Generation Complete!</h2>
-            <p className="text-zinc-400 mb-6">{result.message}</p>
+            <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '8px' }}>Generation Complete!</h2>
+            <p style={{ color: '#a1a1aa', marginBottom: '24px' }}>{result.message}</p>
             
-            <div className="w-full max-w-md rounded-xl overflow-hidden border border-white/10 mb-6 shadow-xl relative group">
-               <img src={result.mockOutputUrl} alt="Generated output" className="w-full h-auto" />
-               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
-                  <button className="btn btn-secondary text-sm">Download</button>
-               </div>
+            <div style={{ width: '100%', maxWidth: '400px', borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', marginBottom: '24px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.5)', position: 'relative' }}>
+               <img src={result.mockOutputUrl} alt="Generated output" style={{ width: '100%', height: 'auto', display: 'block' }} />
             </div>
 
             <button 
               onClick={() => { setResult(null); setInputData(''); }} 
-              className="btn btn-outline"
+              style={{ padding: '12px 24px', borderRadius: '10px', background: 'transparent', border: '1px solid var(--glass-border)', color: '#fafafa', cursor: 'pointer', fontWeight: 500 }}
             >
               Generate Another
             </button>
           </div>
         )}
       </div>
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}} />
     </div>
   );
 }
