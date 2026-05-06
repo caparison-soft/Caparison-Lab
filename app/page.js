@@ -12,17 +12,16 @@ export default function LandingPage() {
             <img src="/logo.png" alt="Caparison Lab" className={styles.logo} />
           </Link>
           
-          <div className={styles.navLinks} style={{ display: 'none' }}>
-            {/* Mobile hide */}
-          </div>
-          <div className={styles.navLinks} style={{ display: 'flex' }} className="hidden md:flex">
-            <Link href="/explore" className={styles.navLink}>App Market</Link>
-            <Link href="/pricing" className={styles.navLink}>Pricing</Link>
-          </div>
-          
-          <div className={styles.authButtons}>
-            <Link href="/login" className={styles.navLink} style={{ display: 'none' }} className="hidden sm:block">Login</Link>
-            <Link href="/signup" className={styles.btnGetStarted}>Get Started</Link>
+          <div className="flex items-center gap-8">
+            <div className="hidden md:flex items-center gap-6">
+              <Link href="/explore" className={styles.navLink}>App Market</Link>
+              <Link href="/pricing" className={styles.navLink}>Pricing</Link>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <Link href="/login" className="hidden sm:block text-[#a1a1aa] hover:text-white font-medium text-sm transition-colors">Login</Link>
+              <Link href="/signup" className={styles.btnGetStarted}>Get Started</Link>
+            </div>
           </div>
         </div>
       </nav>
