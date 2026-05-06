@@ -22,6 +22,20 @@ export default async function LandingPage() {
   let dbUser = null;
   if (user) {
     dbUser = await prisma.user.findUnique({ where: { supabaseId: user.id } });
+    
+    // Failsafe: If user exists in Supabase but not Prisma, create them instantly
+    if (!dbUser) {
+      dbUser = await prisma.user.create({
+        data: {
+          supabaseId: user.id,
+          email: user.email,
+          displayName: user.user_metadata?.name || user.user_metadata?.full_name || user.email.split('@')[0],
+          credits: 100, // Default 100 free credits
+          role: 'USER',
+          subscriptionTier: 'FREE',
+        }
+      });
+    }
   }
 
   return (
