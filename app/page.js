@@ -1,7 +1,29 @@
 import Link from 'next/link';
 import styles from './page.module.css';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { prisma } from '../lib/prisma';
+import ProfileDropdown from '../components/layout/ProfileDropdown';
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const cookieStore = await cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        getAll() { return cookieStore.getAll(); },
+      },
+    }
+  );
+
+  const { data: { user } } = await supabase.auth.getUser();
+
+  let dbUser = null;
+  if (user) {
+    dbUser = await prisma.user.findUnique({ where: { supabaseId: user.id } });
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-[#050505] text-white">
       
@@ -19,8 +41,14 @@ export default function LandingPage() {
             </div>
             
             <div className="flex items-center gap-4">
-              <Link href="/login" className="hidden sm:block text-[#a1a1aa] hover:text-white font-medium text-sm transition-colors">Login</Link>
-              <Link href="/signup" className={styles.btnGetStarted}>Get Started</Link>
+              {user ? (
+                <ProfileDropdown user={user} role={dbUser?.role || 'USER'} />
+              ) : (
+                <>
+                  <Link href="/login" className="hidden sm:block text-[#a1a1aa] hover:text-white font-medium text-sm transition-colors">Login</Link>
+                  <Link href="/signup" className={styles.btnGetStarted}>Get Started</Link>
+                </>
+              )}
             </div>
           </div>
         </div>
