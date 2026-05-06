@@ -45,7 +45,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 h-screen border-r border-white/5 bg-secondary flex flex-col fixed left-0 top-0 z-40 hidden md:flex">
+    <aside className="w-[260px] h-screen border-r border-white/5 bg-secondary flex flex-col fixed left-0 top-0 z-40 hidden md:flex">
       <div className="h-20 flex items-center px-6 border-b border-white/5">
         <Link href="/dashboard" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-[0_0_10px_rgba(139,92,246,0.5)]">

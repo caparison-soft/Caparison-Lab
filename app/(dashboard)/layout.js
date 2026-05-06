@@ -5,7 +5,7 @@ export default function DashboardLayout({ children }) {
   return (
     <div className="min-h-screen bg-primary text-white flex">
       <Sidebar />
-      <div className="flex-1 flex flex-col md:ml-64 relative min-h-screen">
+      <div className="flex-1 flex flex-col md:pl-[260px] relative min-h-screen w-full">
         {/* Background mesh for dashboard */}
         <div className="absolute inset-0 z-0 pointer-events-none opacity-50" style={{ background: 'var(--gradient-mesh)' }}></div>
         

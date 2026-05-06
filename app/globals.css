@@ -6,6 +6,11 @@
 
 @theme {
   --color-primary: var(--bg-primary);
+  --color-secondary: var(--bg-secondary);
+  --color-tertiary: var(--bg-tertiary);
+  --color-elevated: var(--bg-elevated);
+  --color-surface: var(--bg-surface);
+  --color-accent: var(--accent-primary);
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
