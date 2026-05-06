@@ -2,10 +2,16 @@
 
 import { createClient } from '../../lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import useSWR from 'swr';
+
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function Topbar() {
   const router = useRouter();
   const supabase = createClient();
+
+  // Fetch real-time credits using SWR
+  const { data, error, isLoading } = useSWR('/api/user/credits', fetcher);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -24,7 +30,11 @@ export default function Topbar() {
         {/* Credits Badge */}
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm cursor-pointer hover:bg-white/10 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-400"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
-          <span className="font-semibold text-sm">150</span>
+          {isLoading ? (
+            <span className="w-6 h-4 bg-white/20 animate-pulse rounded"></span>
+          ) : (
+            <span className="font-semibold text-sm">{data?.credits ?? 0}</span>
+          )}
           <span className="text-xs text-zinc-400 uppercase font-medium">Credits</span>
         </div>
 

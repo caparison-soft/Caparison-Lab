@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { prisma } from '../../../../lib/prisma';
 import Link from 'next/link';
+import ExecutionWorkspace from './ExecutionWorkspace';
 
 export default async function AppDetailPage({ params }) {
   const slug = (await params).slug;
@@ -104,32 +105,9 @@ export default async function AppDetailPage({ params }) {
           </div>
         </div>
 
-        {/* Right Column: Execution Workspace (Placeholder for Step 3) */}
+        {/* Right Column: Real Execution Workspace */}
         <div className="lg:col-span-2">
-          <div className="card h-full min-h-[500px] flex flex-col relative overflow-hidden">
-            {/* Background embellishment */}
-            <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-              <svg width="300" height="300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-            </div>
-            
-            <div className="card-header border-b border-white/5 bg-black/20">
-              <h3 className="font-bold">Workspace</h3>
-            </div>
-            
-            <div className="card-body flex-1 flex flex-col items-center justify-center text-center p-8 relative z-10">
-              <div className="w-20 h-20 rounded-2xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(99,102,241,0.2)]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="m10 13 4 4-4 4"/></svg>
-              </div>
-              <h2 className="text-2xl font-bold mb-2 text-white">Ready to run {app.name}?</h2>
-              <p className="text-zinc-400 max-w-md mb-8">
-                The execution engine is currently being built in Step 3. Soon, you will be able to configure parameters and generate results directly from this workspace.
-              </p>
-              <button disabled className="btn btn-primary opacity-50 cursor-not-allowed">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                Generate (Coming Soon)
-              </button>
-            </div>
-          </div>
+          <ExecutionWorkspace app={app} />
         </div>
 
       </div>

@@ -2,14 +2,49 @@ export const dynamic = 'force-dynamic';
 
 import Link from 'next/link';
 import { prisma } from '../../../lib/prisma';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
 export default async function DashboardPage() {
+  const cookieStore = await cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        getAll() { return cookieStore.getAll(); },
+      },
+    }
+  );
+
+  const { data: { user } } = await supabase.auth.getUser();
+
+  let dbUser = null;
+  if (user) {
+    dbUser = await prisma.user.findUnique({ where: { supabaseId: user.id } });
+  }
+
   // Fetch up to 2 active apps to feature
   const featuredApps = await prisma.app.findMany({
     where: { isActive: true },
     orderBy: { createdAt: 'desc' },
     take: 2,
   });
+
+  // Fetch recent generations
+  let recentGenerations = [];
+  let totalGenerations = 0;
+  if (dbUser) {
+    recentGenerations = await prisma.generation.findMany({
+      where: { userId: dbUser.id },
+      orderBy: { createdAt: 'desc' },
+      take: 4,
+      include: { app: true },
+    });
+    totalGenerations = await prisma.generation.count({
+      where: { userId: dbUser.id },
+    });
+  }
 
   const categoryColors = {
     IMAGE: 'badge-primary',
@@ -31,7 +66,7 @@ export default async function DashboardPage() {
         <div className="card-body relative z-10 sm:p-10">
           <h2 className="text-3xl font-bold mb-2">Welcome back to Caparison Lab</h2>
           <p className="text-indigo-200 mb-6 max-w-2xl">
-            You have 150 credits available. Explore our new AI video generation tools or use your free recurring utilities to enhance your workflow.
+            You have {dbUser?.credits ?? 0} credits available. Explore our new AI tools or use your free recurring utilities to enhance your workflow.
           </p>
           <div className="flex flex-wrap gap-4">
             <Link href="/apps" className="btn btn-primary">Browse Apps</Link>
@@ -46,7 +81,7 @@ export default async function DashboardPage() {
           <div className="card-body flex items-center justify-between">
             <div>
               <p className="text-zinc-400 text-sm font-medium mb-1">Available Credits</p>
-              <h3 className="text-3xl font-bold text-white">150</h3>
+              <h3 className="text-3xl font-bold text-white">{dbUser?.credits ?? 0}</h3>
             </div>
             <div className="w-12 h-12 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-500">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
@@ -58,7 +93,7 @@ export default async function DashboardPage() {
           <div className="card-body flex items-center justify-between">
             <div>
               <p className="text-zinc-400 text-sm font-medium mb-1">Total Generations</p>
-              <h3 className="text-3xl font-bold text-white">24</h3>
+              <h3 className="text-3xl font-bold text-white">{totalGenerations}</h3>
             </div>
             <div className="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -70,7 +105,7 @@ export default async function DashboardPage() {
           <div className="card-body flex items-center justify-between">
             <div>
               <p className="text-zinc-400 text-sm font-medium mb-1">Current Plan</p>
-              <h3 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Pro</h3>
+              <h3 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">{dbUser?.subscriptionTier ?? 'Free'}</h3>
             </div>
             <div className="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -147,19 +182,34 @@ export default async function DashboardPage() {
           
           <div className="card">
             <div className="flex flex-col">
-              {/* Still Mock History for now until Step 3 */}
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="p-4 border-b border-white/5 last:border-0 flex items-center gap-4 hover:bg-white/5 transition-colors cursor-pointer">
-                  <div className="w-12 h-12 rounded bg-zinc-800 shrink-0 flex items-center justify-center text-xl">✨</div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm text-white truncate">Sci-fi city landscape</p>
-                    <p className="text-xs text-zinc-500 truncate">Image Generator • 2h ago</p>
+              {recentGenerations.length === 0 ? (
+                 <div className="p-8 text-center">
+                   <p className="text-zinc-500 text-sm">No generations yet.</p>
+                 </div>
+              ) : (
+                recentGenerations.map((gen) => (
+                  <div key={gen.id} className="p-4 border-b border-white/5 last:border-0 flex items-center gap-4 hover:bg-white/5 transition-colors cursor-pointer">
+                    <div className="w-12 h-12 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center shrink-0 overflow-hidden">
+                      {gen.app.iconUrl ? (
+                        <img src={gen.app.iconUrl} alt={gen.app.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-xl">✨</span>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm text-white truncate">
+                        {gen.inputData?.prompt ? `"${gen.inputData.prompt}"` : 'Executed App'}
+                      </p>
+                      <p className="text-xs text-zinc-500 truncate">{gen.app.name} • {new Date(gen.createdAt).toLocaleDateString()}</p>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-xs font-semibold text-red-400">
+                        {gen.creditsUsed > 0 ? `-${gen.creditsUsed}` : 'Free'}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <span className="text-xs font-semibold text-red-400">-2</span>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
             <div className="p-3 border-t border-white/5 text-center bg-black/20">
               <Link href="/history" className="text-xs text-zinc-400 hover:text-white font-medium">View all history</Link>
