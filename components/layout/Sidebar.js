@@ -29,8 +29,8 @@ export default function Sidebar() {
       )
     },
     {
-      name: 'Buy Credits',
-      href: '/credits',
+      name: 'Billing',
+      href: '/billing',
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
       )
@@ -45,7 +45,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-[260px] h-screen border-r border-white/5 bg-secondary flex flex-col fixed left-0 top-0 z-40 hidden md:flex">
+    <aside className="w-64 h-screen border-r border-white/5 bg-secondary flex flex-col fixed left-0 top-0 z-40 hidden md:flex">
       <div className="h-20 flex items-center px-6 border-b border-white/5">
         <Link href="/dashboard" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-[0_0_10px_rgba(139,92,246,0.5)]">
@@ -82,7 +82,7 @@ export default function Sidebar() {
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
           <h4 className="font-semibold text-sm mb-1 text-white relative z-10">Pro Plan</h4>
           <p className="text-xs text-zinc-400 mb-3 relative z-10">You have 150 credits remaining</p>
-          <Link href="/credits" className="btn btn-sm w-full bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 border-none relative z-10">
+          <Link href="/billing" className="btn btn-sm w-full bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 border-none relative z-10">
             Top up credits
           </Link>
         </div>
