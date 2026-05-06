@@ -1,6 +1,23 @@
 import Link from 'next/link';
+import { prisma } from '../../../lib/prisma';
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  // Fetch up to 2 active apps to feature
+  const featuredApps = await prisma.app.findMany({
+    where: { isActive: true },
+    orderBy: { createdAt: 'desc' },
+    take: 2,
+  });
+
+  const categoryColors = {
+    IMAGE: 'badge-primary',
+    VIDEO: 'badge-info',
+    AUDIO: 'badge-warning',
+    TEXT: 'badge-success',
+    TOOL: 'badge-info',
+    UTILITY: 'badge-warning',
+  };
+
   return (
     <div className="animate-fade-in stagger">
       
@@ -69,56 +86,54 @@ export default function DashboardPage() {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Mock App Cards */}
-            <div className="card card-hover overflow-hidden flex flex-col h-full cursor-pointer">
-              <div className="h-32 bg-zinc-800 relative">
-                {/* Image Placeholder */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-900/50 to-indigo-900/50"></div>
-                <div className="absolute top-3 right-3">
-                  <span className="badge badge-primary">AI Video</span>
-                </div>
+            {featuredApps.length === 0 ? (
+              <div className="col-span-2 p-8 text-center border border-white/5 rounded-xl bg-white/5">
+                <p className="text-zinc-400">No apps available yet.</p>
               </div>
-              <div className="card-body p-5 flex-1 flex flex-col">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            ) : (
+              featuredApps.map((app) => (
+                <Link key={app.id} href={`/apps/${app.slug}`} className="card card-hover overflow-hidden flex flex-col h-full cursor-pointer group">
+                  <div className="h-32 bg-zinc-800 relative">
+                    <div 
+                      className="absolute inset-0 bg-gradient-to-br from-indigo-900/50 to-purple-900/50 transition-transform duration-500 group-hover:scale-105"
+                      style={{
+                        backgroundImage: app.coverImageUrl ? `url(${app.coverImageUrl})` : undefined,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center'
+                      }}
+                    ></div>
+                    <div className="absolute top-3 right-3">
+                      {app.isFree ? (
+                        <span className="badge badge-free">Free</span>
+                      ) : (
+                        <span className={`badge ${categoryColors[app.category] || 'badge-primary'}`}>{app.category}</span>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-bold text-white leading-tight">Story to Video AI</h4>
-                    <p className="text-xs text-zinc-400">10 Credits / Generation</p>
+                  <div className="card-body p-5 flex-1 flex flex-col">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 overflow-hidden" style={{ border: '1px solid var(--glass-border)' }}>
+                        {app.iconUrl ? (
+                          <img src={app.iconUrl} alt={app.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-lg">🤖</span>
+                        )}
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-white leading-tight">{app.name}</h4>
+                        <p className="text-xs text-zinc-400">
+                          {app.isFree ? '0 Credits' : `${app.creditCost} Credits / Use`}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-zinc-400 line-clamp-2 mb-4 flex-1">
+                      {app.shortDesc || app.description}
+                    </p>
+                    <button className="btn btn-secondary w-full text-sm">Open App</button>
                   </div>
-                </div>
-                <p className="text-sm text-zinc-400 line-clamp-2 mb-4 flex-1">
-                  Convert your text stories into stunning videos with AI-generated scenes, voiceover, and captions.
-                </p>
-                <button className="btn btn-secondary w-full text-sm">Open App</button>
-              </div>
-            </div>
-
-            <div className="card card-hover overflow-hidden flex flex-col h-full cursor-pointer">
-              <div className="h-32 bg-zinc-800 relative">
-                {/* Image Placeholder */}
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/50 to-teal-900/50"></div>
-                <div className="absolute top-3 right-3">
-                  <span className="badge badge-free">Free Pro Utility</span>
-                </div>
-              </div>
-              <div className="card-body p-5 flex-1 flex flex-col">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-white leading-tight">Video QC Tool</h4>
-                    <p className="text-xs text-zinc-400">0 Credits</p>
-                  </div>
-                </div>
-                <p className="text-sm text-zinc-400 line-clamp-2 mb-4 flex-1">
-                  Quality control checker for your videos. Analyzes audio levels, resolution, and frame rates.
-                </p>
-                <button className="btn btn-secondary w-full text-sm">Open App</button>
-              </div>
-            </div>
+                </Link>
+              ))
+            )}
           </div>
         </div>
 
@@ -130,9 +145,10 @@ export default function DashboardPage() {
           
           <div className="card">
             <div className="flex flex-col">
+              {/* Still Mock History for now until Step 3 */}
               {[1, 2, 3, 4].map((i) => (
                 <div key={i} className="p-4 border-b border-white/5 last:border-0 flex items-center gap-4 hover:bg-white/5 transition-colors cursor-pointer">
-                  <div className="w-12 h-12 rounded bg-zinc-800 shrink-0"></div>
+                  <div className="w-12 h-12 rounded bg-zinc-800 shrink-0 flex items-center justify-center text-xl">✨</div>
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-sm text-white truncate">Sci-fi city landscape</p>
                     <p className="text-xs text-zinc-500 truncate">Image Generator • 2h ago</p>
