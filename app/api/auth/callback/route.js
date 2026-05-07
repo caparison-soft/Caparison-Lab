@@ -19,11 +19,19 @@ export async function GET(request) {
       });
 
       if (!existingUser) {
+        // Fallback for generating a somewhat unique username based on email
+        const baseUsername = user.user_metadata?.name || user.user_metadata?.full_name || user.email.split('@')[0];
+        // Strip out non-alphanumeric characters and lowercase to make it a valid username
+        const sanitizedUsername = baseUsername.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() || 'user';
+        // Add random string to ensure uniqueness
+        const uniqueUsername = `${sanitizedUsername}_${Math.random().toString(36).substring(2, 8)}`;
+
         await prisma.user.create({
           data: {
             supabaseId: user.id,
             email: user.email,
-            displayName: user.user_metadata?.name || user.user_metadata?.full_name || user.email.split('@')[0],
+            username: uniqueUsername,
+            avatarUrl: user.user_metadata?.avatar_url || null,
             credits: 100, // Default 100 free credits
             role: 'USER',
             subscriptionTier: 'FREE',
