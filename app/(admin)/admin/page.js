@@ -1,6 +1,26 @@
 import Link from 'next/link';
 
 export default function AdminDashboard() {
+  const cardStyle = {
+    background: 'var(--glass-bg)',
+    border: '1px solid var(--glass-border)',
+    borderRadius: '16px',
+    backdropFilter: 'blur(20px)',
+    transition: 'all 0.25s ease',
+  };
+
+  const statIconStyle = (color) => ({
+    width: '48px',
+    height: '48px',
+    borderRadius: '50%',
+    background: `${color}15`,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: color,
+    flexShrink: 0,
+  });
+
   return (
     <div className="animate-fade-in stagger">
       <div className="flex items-center justify-between mb-8">
@@ -18,58 +38,58 @@ export default function AdminDashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="card card-hover">
-          <div className="p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-              </div>
-              <h3 className="text-zinc-400 font-medium">Total Users</h3>
+        <div style={{ ...cardStyle, padding: '24px' }} className="card-hover">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <p style={{ color: '#a1a1aa', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>Total Users</p>
+              <h3 style={{ fontSize: '32px', fontWeight: 700 }}>1,248</h3>
             </div>
-            <p className="text-3xl font-bold text-white">1,248</p>
+            <div style={statIconStyle('#818cf8')}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
           </div>
         </div>
         
-        <div className="card card-hover">
-          <div className="p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-              </div>
-              <h3 className="text-zinc-400 font-medium">Revenue</h3>
+        <div style={{ ...cardStyle, padding: '24px' }} className="card-hover">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <p style={{ color: '#a1a1aa', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>Revenue</p>
+              <h3 style={{ fontSize: '32px', fontWeight: 700 }}>$4,590</h3>
             </div>
-            <p className="text-3xl font-bold text-white">$4,590</p>
+            <div style={statIconStyle('#34d399')}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </div>
           </div>
         </div>
 
-        <div className="card card-hover">
-          <div className="p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-              </div>
-              <h3 className="text-zinc-400 font-medium">Active Apps</h3>
+        <div style={{ ...cardStyle, padding: '24px' }} className="card-hover">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <p style={{ color: '#a1a1aa', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>Active Apps</p>
+              <h3 style={{ fontSize: '32px', fontWeight: 700 }}>12</h3>
             </div>
-            <p className="text-3xl font-bold text-white">12</p>
+            <div style={statIconStyle('#a78bfa')}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            </div>
           </div>
         </div>
 
-        <div className="card card-hover">
-          <div className="p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-8 h-8 rounded-full bg-rose-500/20 flex items-center justify-center text-rose-400">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-              </div>
-              <h3 className="text-zinc-400 font-medium">Generations</h3>
+        <div style={{ ...cardStyle, padding: '24px' }} className="card-hover">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <p style={{ color: '#a1a1aa', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>Generations</p>
+              <h3 style={{ fontSize: '32px', fontWeight: 700 }}>18.4k</h3>
             </div>
-            <p className="text-3xl font-bold text-white">18.4k</p>
+            <div style={statIconStyle('#fb7185')}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            </div>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Quick Links */}
-        <div className="card">
+        <div style={cardStyle}>
           <div className="px-6 py-5 border-b border-white/5">
             <h3 className="text-lg font-bold">Management</h3>
           </div>
@@ -111,7 +131,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Recent Activity Log */}
-        <div className="card">
+        <div style={cardStyle}>
           <div className="px-6 py-5 border-b border-white/5">
             <h3 className="text-lg font-bold">Recent Activity</h3>
           </div>
