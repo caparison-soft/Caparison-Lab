@@ -87,7 +87,14 @@ export default async function HistoryPage() {
                       </span>
                     </td>
                     <td>
-                      <span className="text-red-400 font-medium">-{gen.creditsUsed}</span>
+                      {gen.status === 'FAILED' ? (
+                        <span className="text-zinc-500 font-medium line-through decoration-red-500 mr-2">-{gen.creditsUsed}</span>
+                      ) : (
+                        <span className="text-red-400 font-medium">-{gen.creditsUsed}</span>
+                      )}
+                      {gen.status === 'FAILED' && (
+                        <span className="text-emerald-400 text-xs font-semibold ml-1">Refunded</span>
+                      )}
                     </td>
                     <td>
                       {gen.outputUrl ? (

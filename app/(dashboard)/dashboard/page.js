@@ -222,9 +222,18 @@ export default async function DashboardPage() {
                       <p style={{ fontSize: '12px', color: '#71717a', marginTop: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{gen.app.name} • {new Date(gen.createdAt).toLocaleDateString()}</p>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <span style={{ fontSize: '13px', fontWeight: 600, color: '#f87171' }}>
-                        {gen.creditsUsed > 0 ? `-${gen.creditsUsed}` : 'Free'}
-                      </span>
+                      {gen.status === 'FAILED' ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                          <span style={{ fontSize: '13px', fontWeight: 600, color: '#71717a', textDecoration: 'line-through' }}>
+                            -{gen.creditsUsed}
+                          </span>
+                          <span style={{ fontSize: '11px', fontWeight: 700, color: '#34d399' }}>Refunded</span>
+                        </div>
+                      ) : (
+                        <span style={{ fontSize: '13px', fontWeight: 600, color: '#f87171' }}>
+                          {gen.creditsUsed > 0 ? `-${gen.creditsUsed}` : 'Free'}
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))
