@@ -17,9 +17,9 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="card card-hover">
-          <div className="card-body">
+          <div className="p-6">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
@@ -31,7 +31,7 @@ export default function AdminDashboard() {
         </div>
         
         <div className="card card-hover">
-          <div className="card-body">
+          <div className="p-6">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
@@ -43,7 +43,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="card card-hover">
-          <div className="card-body">
+          <div className="p-6">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
@@ -55,7 +55,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="card card-hover">
-          <div className="card-body">
+          <div className="p-6">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-8 h-8 rounded-full bg-rose-500/20 flex items-center justify-center text-rose-400">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
@@ -70,10 +70,10 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Quick Links */}
         <div className="card">
-          <div className="card-header">
+          <div className="px-6 py-5 border-b border-white/5">
             <h3 className="text-lg font-bold">Management</h3>
           </div>
-          <div className="card-body p-0">
+          <div className="p-0">
             <div className="grid grid-cols-2 gap-px bg-white/5">
               <Link href="/admin/apps" className="p-6 bg-primary/50 hover:bg-white/5 transition-colors group">
                 <div className="w-12 h-12 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
@@ -112,10 +112,10 @@ export default function AdminDashboard() {
 
         {/* Recent Activity Log */}
         <div className="card">
-          <div className="card-header">
+          <div className="px-6 py-5 border-b border-white/5">
             <h3 className="text-lg font-bold">Recent Activity</h3>
           </div>
-          <div className="card-body p-0">
+          <div className="p-0">
             <div className="flex flex-col">
               {[1, 2, 3, 4, 5].map((i) => (
                 <div key={i} className="p-4 border-b border-white/5 last:border-0 flex gap-4 hover:bg-white/5 transition-colors">

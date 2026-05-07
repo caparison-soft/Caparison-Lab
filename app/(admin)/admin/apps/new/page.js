@@ -96,7 +96,7 @@ export default function NewAppPage() {
 
       {error && (
         <div className="card" style={{ borderColor: 'var(--color-danger)', marginBottom: '24px' }}>
-          <div className="card-body flex items-center gap-3">
+          <div className="p-6 flex items-center gap-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>
             <p style={{ color: 'var(--color-danger)' }}>{error}</p>
           </div>
@@ -106,10 +106,10 @@ export default function NewAppPage() {
       <form onSubmit={handleSubmit}>
         {/* Basic Info */}
         <div className="card" style={{ marginBottom: '24px' }}>
-          <div className="card-header">
+          <div className="px-6 py-5 border-b border-white/5">
             <h3 style={{ fontSize: '1.1rem' }}>Basic Information</h3>
           </div>
-          <div className="card-body flex flex-col gap-5">
+          <div className="p-6 flex flex-col gap-5">
             <div className="input-group">
               <label className="input-label">App Name *</label>
               <input
@@ -169,10 +169,10 @@ export default function NewAppPage() {
 
         {/* Classification */}
         <div className="card" style={{ marginBottom: '24px' }}>
-          <div className="card-header">
+          <div className="px-6 py-5 border-b border-white/5">
             <h3 style={{ fontSize: '1.1rem' }}>Classification</h3>
           </div>
-          <div className="card-body flex flex-col gap-5">
+          <div className="p-6 flex flex-col gap-5">
             <div className="input-group">
               <label className="input-label">Category *</label>
               <div className="grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
@@ -181,7 +181,7 @@ export default function NewAppPage() {
                     key={cat.value}
                     type="button"
                     onClick={() => setForm(prev => ({ ...prev, category: cat.value }))}
-                    className="card card-body"
+                    className="card p-6"
                     style={{
                       padding: '16px',
                       cursor: 'pointer',
@@ -206,7 +206,7 @@ export default function NewAppPage() {
                     key={type.value}
                     type="button"
                     onClick={() => setForm(prev => ({ ...prev, appType: type.value }))}
-                    className="card card-body flex items-center gap-4"
+                    className="card p-6 flex items-center gap-4"
                     style={{
                       padding: '16px',
                       cursor: 'pointer',
@@ -238,10 +238,10 @@ export default function NewAppPage() {
 
         {/* Pricing */}
         <div className="card" style={{ marginBottom: '24px' }}>
-          <div className="card-header">
+          <div className="px-6 py-5 border-b border-white/5">
             <h3 style={{ fontSize: '1.1rem' }}>Pricing</h3>
           </div>
-          <div className="card-body flex flex-col gap-5">
+          <div className="p-6 flex flex-col gap-5">
             <div className="flex items-center gap-4">
               <label className="flex items-center gap-3" style={{ cursor: 'pointer' }}>
                 <div
@@ -285,10 +285,10 @@ export default function NewAppPage() {
 
         {/* Media */}
         <div className="card" style={{ marginBottom: '24px' }}>
-          <div className="card-header">
+          <div className="px-6 py-5 border-b border-white/5">
             <h3 style={{ fontSize: '1.1rem' }}>Media (Optional)</h3>
           </div>
-          <div className="card-body flex flex-col gap-5">
+          <div className="p-6 flex flex-col gap-5">
             <div className="input-group">
               <label className="input-label">Icon URL</label>
               <input
@@ -316,10 +316,10 @@ export default function NewAppPage() {
 
         {/* Preview Card */}
         <div className="card" style={{ marginBottom: '24px' }}>
-          <div className="card-header">
+          <div className="px-6 py-5 border-b border-white/5">
             <h3 style={{ fontSize: '1.1rem' }}>Preview</h3>
           </div>
-          <div className="card-body">
+          <div className="p-6">
             <div className="card card-hover" style={{ maxWidth: '320px', overflow: 'hidden' }}>
               <div style={{
                 height: '120px',
@@ -336,7 +336,7 @@ export default function NewAppPage() {
                   {!form.iconUrl && '🤖'}
                 </div>
               </div>
-              <div className="card-body" style={{ paddingTop: '28px' }}>
+              <div className="p-6" style={{ paddingTop: '28px' }}>
                 <h4 className="font-bold" style={{ marginBottom: '4px' }}>
                   {form.name || 'App Name'}
                 </h4>

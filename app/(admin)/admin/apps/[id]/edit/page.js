@@ -149,7 +149,7 @@ export default function EditAppPage() {
 
       {error && (
         <div className="card" style={{ borderColor: 'var(--color-danger)', marginBottom: '24px' }}>
-          <div className="card-body flex items-center gap-3">
+          <div className="p-6 flex items-center gap-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>
             <p style={{ color: 'var(--color-danger)' }}>{error}</p>
           </div>
@@ -159,10 +159,10 @@ export default function EditAppPage() {
       <form onSubmit={handleSubmit}>
         {/* Basic Info */}
         <div className="card" style={{ marginBottom: '24px' }}>
-          <div className="card-header">
+          <div className="px-6 py-5 border-b border-white/5">
             <h3 style={{ fontSize: '1.1rem' }}>Basic Information</h3>
           </div>
-          <div className="card-body flex flex-col gap-5">
+          <div className="p-6 flex flex-col gap-5">
             <div className="input-group">
               <label className="input-label">App Name *</label>
               <input type="text" name="name" value={form.name} onChange={handleChange} placeholder="e.g. AI Image Generator" className="input" required />
@@ -190,16 +190,16 @@ export default function EditAppPage() {
 
         {/* Classification */}
         <div className="card" style={{ marginBottom: '24px' }}>
-          <div className="card-header">
+          <div className="px-6 py-5 border-b border-white/5">
             <h3 style={{ fontSize: '1.1rem' }}>Classification</h3>
           </div>
-          <div className="card-body flex flex-col gap-5">
+          <div className="p-6 flex flex-col gap-5">
             <div className="input-group">
               <label className="input-label">Category *</label>
               <div className="grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
                 {CATEGORIES.map(cat => (
                   <button key={cat.value} type="button" onClick={() => setForm(prev => ({ ...prev, category: cat.value }))}
-                    className="card card-body" style={{ padding: '16px', cursor: 'pointer', textAlign: 'center',
+                    className="card p-6" style={{ padding: '16px', cursor: 'pointer', textAlign: 'center',
                       borderColor: form.category === cat.value ? 'var(--accent-primary)' : undefined,
                       background: form.category === cat.value ? 'rgba(139, 92, 246, 0.1)' : undefined,
                       boxShadow: form.category === cat.value ? 'var(--shadow-glow)' : undefined,
@@ -216,7 +216,7 @@ export default function EditAppPage() {
               <div className="flex flex-col gap-3">
                 {APP_TYPES.map(type => (
                   <button key={type.value} type="button" onClick={() => setForm(prev => ({ ...prev, appType: type.value }))}
-                    className="card card-body flex items-center gap-4" style={{ padding: '16px', cursor: 'pointer', textAlign: 'left',
+                    className="card p-6 flex items-center gap-4" style={{ padding: '16px', cursor: 'pointer', textAlign: 'left',
                       borderColor: form.appType === type.value ? 'var(--accent-primary)' : undefined,
                       background: form.appType === type.value ? 'rgba(139, 92, 246, 0.1)' : undefined,
                       boxShadow: form.appType === type.value ? 'var(--shadow-glow)' : undefined,
@@ -240,10 +240,10 @@ export default function EditAppPage() {
 
         {/* Pricing */}
         <div className="card" style={{ marginBottom: '24px' }}>
-          <div className="card-header">
+          <div className="px-6 py-5 border-b border-white/5">
             <h3 style={{ fontSize: '1.1rem' }}>Pricing</h3>
           </div>
-          <div className="card-body flex flex-col gap-5">
+          <div className="p-6 flex flex-col gap-5">
             <div className="flex items-center gap-4">
               <label className="flex items-center gap-3" style={{ cursor: 'pointer' }}>
                 <div onClick={() => setForm(prev => ({ ...prev, isFree: !prev.isFree }))}
@@ -274,10 +274,10 @@ export default function EditAppPage() {
 
         {/* Media */}
         <div className="card" style={{ marginBottom: '24px' }}>
-          <div className="card-header">
+          <div className="px-6 py-5 border-b border-white/5">
             <h3 style={{ fontSize: '1.1rem' }}>Media (Optional)</h3>
           </div>
-          <div className="card-body flex flex-col gap-5">
+          <div className="p-6 flex flex-col gap-5">
             <div className="input-group">
               <label className="input-label">Icon URL</label>
               <input type="url" name="iconUrl" value={form.iconUrl} onChange={handleChange} placeholder="https://example.com/icon.png" className="input" />
