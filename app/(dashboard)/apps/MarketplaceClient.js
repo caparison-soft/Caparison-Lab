@@ -126,7 +126,13 @@ export default function MarketplaceClient({ initialApps }) {
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
           {filteredApps.map((app) => (
-            <Link key={app.id} href={`/apps/${app.slug}`} style={{ ...cardStyle, overflow: 'hidden', display: 'flex', flexDirection: 'column', textDecoration: 'none', color: 'inherit' }}>
+            <Link 
+              key={app.id} 
+              href={app.externalUrl || `/apps/${app.slug}`} 
+              target={app.externalUrl ? "_blank" : undefined}
+              rel={app.externalUrl ? "noopener noreferrer" : undefined}
+              style={{ ...cardStyle, overflow: 'hidden', display: 'flex', flexDirection: 'column', textDecoration: 'none', color: 'inherit' }}
+            >
               <div style={{ height: '144px', background: '#1a1a24', position: 'relative', overflow: 'hidden' }}>
                 <div 
                   style={{

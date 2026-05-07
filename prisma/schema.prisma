@@ -45,6 +45,7 @@ model App {
   creditCost    Int          @default(0) @map("credit_cost")
   isFree        Boolean      @default(false) @map("is_free")
   isActive      Boolean      @default(true) @map("is_active")
+  externalUrl   String?      @map("external_url")
   configJson    Json?        @map("config_json")
   usageCount    Int          @default(0) @map("usage_count")
   createdAt     DateTime     @default(now()) @map("created_at")

@@ -147,7 +147,13 @@ export default async function DashboardPage() {
               </div>
             ) : (
               featuredApps.map((app) => (
-                <Link key={app.id} href={`/apps/${app.slug}`} style={{ ...cardStyle, overflow: 'hidden', display: 'flex', flexDirection: 'column', cursor: 'pointer', textDecoration: 'none', color: 'inherit' }}>
+                <Link 
+                  key={app.id} 
+                  href={app.externalUrl || `/apps/${app.slug}`} 
+                  target={app.externalUrl ? "_blank" : undefined}
+                  rel={app.externalUrl ? "noopener noreferrer" : undefined}
+                  style={{ ...cardStyle, overflow: 'hidden', display: 'flex', flexDirection: 'column', cursor: 'pointer', textDecoration: 'none', color: 'inherit' }}
+                >
                   <div style={{ height: '128px', background: '#1a1a24', position: 'relative' }}>
                     <div style={{
                       position: 'absolute',

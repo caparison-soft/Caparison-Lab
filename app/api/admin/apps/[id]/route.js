@@ -30,7 +30,7 @@ export async function PATCH(request, { params }) {
   try {
     const { id } = await params;
     const body = await request.json();
-    const { name, slug, description, shortDesc, category, appType, creditCost, isFree, isActive, iconUrl, coverImageUrl, configJson } = body;
+    const { name, slug, description, shortDesc, category, appType, creditCost, isFree, isActive, iconUrl, coverImageUrl, externalUrl, configJson } = body;
 
     // Check if the app exists
     const existing = await prisma.app.findUnique({ where: { id } });
@@ -63,6 +63,7 @@ export async function PATCH(request, { params }) {
         ...(isActive !== undefined && { isActive }),
         ...(iconUrl !== undefined && { iconUrl }),
         ...(coverImageUrl !== undefined && { coverImageUrl }),
+        ...(externalUrl !== undefined && { externalUrl }),
         ...(configJson !== undefined && { configJson }),
       }
     });

@@ -38,6 +38,7 @@ export default function EditAppPage() {
     isActive: true,
     iconUrl: '',
     coverImageUrl: '',
+    externalUrl: '',
   });
 
   useEffect(() => {
@@ -58,6 +59,7 @@ export default function EditAppPage() {
           isActive: app.isActive ?? true,
           iconUrl: app.iconUrl || '',
           coverImageUrl: app.coverImageUrl || '',
+          externalUrl: app.externalUrl || '',
         });
       } catch (err) {
         setError(err.message);
@@ -285,6 +287,29 @@ export default function EditAppPage() {
             <div className="input-group">
               <label className="input-label">Cover Image URL</label>
               <input type="url" name="coverImageUrl" value={form.coverImageUrl} onChange={handleChange} placeholder="https://example.com/cover.jpg" className="input" />
+            </div>
+          </div>
+        </div>
+
+        {/* Integration */}
+        <div className="card" style={{ marginBottom: '24px' }}>
+          <div className="px-6 py-5 border-b border-white/5">
+            <h3 style={{ fontSize: '1.1rem' }}>Integration</h3>
+          </div>
+          <div className="p-6 flex flex-col gap-5">
+            <div className="input-group">
+              <label className="input-label">External App URL (Optional)</label>
+              <input
+                type="url"
+                name="externalUrl"
+                value={form.externalUrl || ''}
+                onChange={handleChange}
+                placeholder="https://script-generator-xxxx.vercel.app"
+                className="input"
+              />
+              <p className="text-xs text-zinc-500 mt-2">
+                If provided, clicking "Open App" will redirect the user to this external URL instead of the internal app route.
+              </p>
             </div>
           </div>
         </div>
