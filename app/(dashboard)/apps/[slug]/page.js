@@ -114,9 +114,27 @@ export default async function AppDetailPage({ params }) {
           </div>
         </div>
 
-        {/* Right Column: Real Execution Workspace */}
+        {/* Right Column: Real Execution Workspace or External App Info */}
         <div>
-          <ExecutionWorkspace app={app} />
+          {app.externalUrl ? (
+            <div style={{ ...cardStyle, height: '100%', minHeight: '500px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px' }}>
+              <div style={{ width: '100%', flex: 1, maxHeight: '400px', background: '#1a1a24', borderRadius: '12px', border: '1px dashed rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '32px' }}>
+                <div style={{ textAlign: 'center', color: '#a1a1aa' }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto 16px auto', opacity: 0.5 }}><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>
+                  <p style={{ fontWeight: 500, fontSize: '16px' }}>Video Demo Placeholder</p>
+                  <p style={{ fontSize: '13px', marginTop: '4px', opacity: 0.7 }}>A video showing how to use the app will go here.</p>
+                </div>
+              </div>
+              <h2 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '8px' }}>Ready to start?</h2>
+              <p style={{ color: '#a1a1aa', textAlign: 'center', marginBottom: '24px', maxWidth: '400px' }}>This is an external micro-service. It will securely connect to your Caparison Lab account.</p>
+              <a href={app.externalUrl} target="_blank" rel="noopener noreferrer" style={{ padding: '16px 48px', fontSize: '16px', fontWeight: 700, borderRadius: '12px', background: 'var(--gradient-primary)', color: '#ffffff', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: '0 10px 20px -5px rgba(99,102,241,0.5)', transition: 'transform 0.2s' }}>
+                Launch {app.name}
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          ) : (
+            <ExecutionWorkspace app={app} />
+          )}
         </div>
 
       </div>

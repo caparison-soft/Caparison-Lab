@@ -126,13 +126,16 @@ export default function MarketplaceClient({ initialApps }) {
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
           {filteredApps.map((app) => (
-            <Link 
+            <div 
               key={app.id} 
-              href={app.externalUrl || `/apps/${app.slug}`} 
-              target={app.externalUrl ? "_blank" : undefined}
-              rel={app.externalUrl ? "noopener noreferrer" : undefined}
-              style={{ ...cardStyle, overflow: 'hidden', display: 'flex', flexDirection: 'column', textDecoration: 'none', color: 'inherit' }}
+              style={{ ...cardStyle, overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative' }}
             >
+              {/* Link wrapper covering the entire card except interactive elements inside */}
+              <Link 
+                href={`/apps/${app.slug}`}
+                style={{ position: 'absolute', inset: 0, zIndex: 1 }}
+                aria-label={`Open ${app.name}`}
+              />
               <div style={{ height: '144px', background: '#1a1a24', position: 'relative', overflow: 'hidden' }}>
                 <div 
                   style={{
@@ -185,7 +188,7 @@ export default function MarketplaceClient({ initialApps }) {
                   </span>
                 </div>
               </div>
-            </Link>
+              </div>
           ))}
         </div>
       )}
