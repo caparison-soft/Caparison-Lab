@@ -43,7 +43,9 @@ export default function ProfileDropdown({ user, role }) {
           height: '36px',
           borderRadius: '50%',
           border: '2px solid rgba(99,102,241,0.5)',
-          background: 'linear-gradient(135deg, #6366f1, #9333ea)',
+          background: user?.user_metadata?.avatar_url 
+            ? `url(${user.user_metadata.avatar_url}) center/cover no-repeat` 
+            : 'linear-gradient(135deg, #6366f1, #9333ea)',
           color: 'white',
           display: 'flex',
           alignItems: 'center',
@@ -57,7 +59,7 @@ export default function ProfileDropdown({ user, role }) {
           boxShadow: isOpen ? '0 0 0 2px rgba(99,102,241,0.3)' : 'none',
         }}
       >
-        {getInitials(user?.email)}
+        {!user?.user_metadata?.avatar_url && getInitials(user?.email)}
       </button>
 
       {/* Dropdown Menu */}
@@ -82,7 +84,9 @@ export default function ProfileDropdown({ user, role }) {
               width: '40px',
               height: '40px',
               borderRadius: '8px',
-              background: 'linear-gradient(135deg, #6366f1, #9333ea)',
+              background: user?.user_metadata?.avatar_url 
+                ? `url(${user.user_metadata.avatar_url}) center/cover no-repeat` 
+                : 'linear-gradient(135deg, #6366f1, #9333ea)',
               color: 'white',
               display: 'flex',
               alignItems: 'center',
@@ -91,7 +95,7 @@ export default function ProfileDropdown({ user, role }) {
               fontSize: '16px',
               flexShrink: 0,
             }}>
-              {getInitials(user?.email)}
+              {!user?.user_metadata?.avatar_url && getInitials(user?.email)}
             </div>
             <div style={{ minWidth: 0, flex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
