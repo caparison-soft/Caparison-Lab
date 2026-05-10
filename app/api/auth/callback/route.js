@@ -39,7 +39,9 @@ export async function GET(request) {
         });
       }
 
-      return NextResponse.redirect(`${origin}${next}`);
+      // Handle absolute URLs or relative paths
+      const redirectUrl = next.startsWith('http') ? next : `${origin}${next}`;
+      return NextResponse.redirect(redirectUrl);
     }
   }
 
