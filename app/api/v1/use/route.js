@@ -61,9 +61,10 @@ export async function POST(request) {
       );
     }
 
-    // 3.6 Validate against pricing rules if they exist and cost is overridden
+    // 3.6 Validate against pricing rules (only in 'fixed' mode)
+    const pricingMode = appConfig.pricingMode || 'fixed';
     const rules = appConfig.pricingRules;
-    if (rules && overrideCost !== undefined) {
+    if (pricingMode === 'fixed' && rules && overrideCost !== undefined) {
       const validCosts = Object.values(rules).map(Number);
       if (!validCosts.includes(creditCost)) {
         return NextResponse.json(
@@ -76,6 +77,8 @@ export async function POST(request) {
         );
       }
     }
+    // In 'components' mode, the app calculates cost from component data.
+    // Only the maxCreditCost cap (checked above in 3.5) prevents abuse.
 
     // 4. Check if the app is free or user has enough credits
     const isFreeAction = app.isFree || creditCost === 0;

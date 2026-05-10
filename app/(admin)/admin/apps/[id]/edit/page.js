@@ -40,7 +40,9 @@ export default function EditAppPage() {
     coverImageUrl: '',
     externalUrl: '',
     maxCreditCost: '',
+    pricingMode: 'fixed',  // 'fixed' or 'components'
     pricingRules: [],  // [{ key, label, cost }]
+    pricingComponents: [],  // [{ name, label, type: 'base'|'multiplier', options: [{ key, label, value }] }]
   });
 
   useEffect(() => {
@@ -59,6 +61,22 @@ export default function EditAppPage() {
           cost: rulesObj[key],
         }));
 
+        // Convert components object to array format
+        const componentsObj = config.pricingComponents || {};
+        const pricingComponents = Object.keys(componentsObj).map(name => {
+          const comp = componentsObj[name];
+          return {
+            name,
+            label: comp.label || name,
+            type: comp.type || 'base',
+            options: Object.keys(comp.options || {}).map(key => ({
+              key,
+              label: comp.options[key].label || key,
+              value: comp.options[key].cost ?? comp.options[key].factor ?? 0,
+            })),
+          };
+        });
+
         setForm({
           name: app.name || '',
           slug: app.slug || '',
@@ -73,7 +91,9 @@ export default function EditAppPage() {
           coverImageUrl: app.coverImageUrl || '',
           externalUrl: app.externalUrl || '',
           maxCreditCost: config.maxCreditCost || '',
+          pricingMode: config.pricingMode || (Object.keys(componentsObj).length > 0 ? 'components' : 'fixed'),
           pricingRules,
+          pricingComponents,
         });
       } catch (err) {
         setError(err.message);
@@ -99,22 +119,41 @@ export default function EditAppPage() {
 
     try {
       // Build configJson from form fields
-      const pricingRules = {};
-      const pricingLabels = {};
-      form.pricingRules.forEach(rule => {
-        if (rule.key && rule.cost !== '' && rule.cost !== undefined) {
-          pricingRules[rule.key] = parseInt(rule.cost) || 0;
-          if (rule.label) pricingLabels[rule.key] = rule.label;
-        }
-      });
+      const configJson = {};
 
-      const configJson = {
-        ...(form.maxCreditCost ? { maxCreditCost: parseInt(form.maxCreditCost) } : {}),
-        ...(Object.keys(pricingRules).length > 0 ? { pricingRules } : {}),
-        ...(Object.keys(pricingLabels).length > 0 ? { pricingLabels } : {}),
-      };
+      if (form.maxCreditCost) configJson.maxCreditCost = parseInt(form.maxCreditCost);
+      configJson.pricingMode = form.pricingMode;
 
-      const { pricingRules: _pr, maxCreditCost: _mc, ...formWithoutPricing } = form;
+      if (form.pricingMode === 'fixed') {
+        const pricingRules = {};
+        const pricingLabels = {};
+        form.pricingRules.forEach(rule => {
+          if (rule.key && rule.cost !== '' && rule.cost !== undefined) {
+            pricingRules[rule.key] = parseInt(rule.cost) || 0;
+            if (rule.label) pricingLabels[rule.key] = rule.label;
+          }
+        });
+        if (Object.keys(pricingRules).length > 0) configJson.pricingRules = pricingRules;
+        if (Object.keys(pricingLabels).length > 0) configJson.pricingLabels = pricingLabels;
+      } else if (form.pricingMode === 'components') {
+        const pricingComponents = {};
+        form.pricingComponents.forEach(comp => {
+          if (!comp.name) return;
+          const options = {};
+          comp.options.forEach(opt => {
+            if (!opt.key) return;
+            if (comp.type === 'multiplier') {
+              options[opt.key] = { label: opt.label || opt.key, factor: parseFloat(opt.value) || 1 };
+            } else {
+              options[opt.key] = { label: opt.label || opt.key, cost: parseInt(opt.value) || 0 };
+            }
+          });
+          pricingComponents[comp.name] = { label: comp.label || comp.name, type: comp.type, options };
+        });
+        if (Object.keys(pricingComponents).length > 0) configJson.pricingComponents = pricingComponents;
+      }
+
+      const { pricingRules: _pr, maxCreditCost: _mc, pricingMode: _pm, pricingComponents: _pc, ...formWithoutPricing } = form;
 
       const res = await fetch(`/api/admin/apps/${params.id}`, {
         method: 'PATCH',
@@ -314,100 +353,106 @@ export default function EditAppPage() {
                   </div>
                 </div>
 
-                {/* Dynamic Pricing Rules */}
+                {/* Pricing Mode Toggle */}
                 <div style={{ marginTop: '8px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                    <div>
-                      <label className="input-label" style={{ marginBottom: '2px' }}>Dynamic Pricing Rules</label>
-                      <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Apps fetch these at runtime. Change here → instant effect, no code changes.</p>
-                    </div>
+                  <label className="input-label" style={{ marginBottom: '8px' }}>Pricing Mode</label>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    {[
+                      { value: 'fixed', label: 'Fixed Rules', desc: 'Simple key → cost mapping' },
+                      { value: 'components', label: 'Components', desc: 'Multi-dimension pricing (model × resolution)' },
+                    ].map(mode => (
+                      <button key={mode.value} type="button"
+                        onClick={() => setForm(prev => ({ ...prev, pricingMode: mode.value }))}
+                        className="card" style={{
+                          flex: 1, padding: '14px', cursor: 'pointer', textAlign: 'left',
+                          borderColor: form.pricingMode === mode.value ? 'var(--accent-primary)' : undefined,
+                          background: form.pricingMode === mode.value ? 'rgba(139,92,246,0.1)' : undefined,
+                        }}>
+                        <p className="font-semibold text-sm" style={{ color: 'var(--text-primary)', marginBottom: '2px' }}>{mode.label}</p>
+                        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{mode.desc}</p>
+                      </button>
+                    ))}
                   </div>
+                </div>
 
-                  {form.pricingRules.length > 0 && (
-                    <div style={{ border: '1px solid var(--glass-border)', borderRadius: '12px', overflow: 'hidden', marginBottom: '12px' }}>
-                      {/* Header */}
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr 40px', gap: '12px', padding: '10px 16px', background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid var(--glass-border)' }}>
-                        <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Key</span>
-                        <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Label</span>
-                        <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Credits</span>
-                        <span></span>
+                {/* Fixed Rules Editor */}
+                {form.pricingMode === 'fixed' && (
+                  <div style={{ marginTop: '4px' }}>
+                    <p className="text-xs" style={{ color: 'var(--text-muted)', marginBottom: '12px' }}>Apps fetch these at runtime. Change here → instant effect, no code changes.</p>
+                    {form.pricingRules.length > 0 && (
+                      <div style={{ border: '1px solid var(--glass-border)', borderRadius: '12px', overflow: 'hidden', marginBottom: '12px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr 40px', gap: '12px', padding: '10px 16px', background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid var(--glass-border)' }}>
+                          <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Key</span>
+                          <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Label</span>
+                          <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Credits</span>
+                          <span></span>
+                        </div>
+                        {form.pricingRules.map((rule, idx) => (
+                          <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr 40px', gap: '12px', padding: '8px 16px', borderBottom: idx < form.pricingRules.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none', alignItems: 'center' }}>
+                            <input type="text" value={rule.key} onChange={e => { const u = [...form.pricingRules]; u[idx] = { ...u[idx], key: e.target.value }; setForm(prev => ({ ...prev, pricingRules: u })); }} placeholder="e.g. 5" className="input" style={{ padding: '8px 10px', fontSize: '13px' }} />
+                            <input type="text" value={rule.label} onChange={e => { const u = [...form.pricingRules]; u[idx] = { ...u[idx], label: e.target.value }; setForm(prev => ({ ...prev, pricingRules: u })); }} placeholder="e.g. 5-min script" className="input" style={{ padding: '8px 10px', fontSize: '13px' }} />
+                            <input type="number" value={rule.cost} onChange={e => { const u = [...form.pricingRules]; u[idx] = { ...u[idx], cost: e.target.value }; setForm(prev => ({ ...prev, pricingRules: u })); }} placeholder="0" min="0" className="input" style={{ padding: '8px 10px', fontSize: '13px' }} />
+                            <button type="button" onClick={() => setForm(prev => ({ ...prev, pricingRules: prev.pricingRules.filter((_, i) => i !== idx) }))} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '18px', padding: '4px', borderRadius: '6px' }} onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; }} onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}>×</button>
+                          </div>
+                        ))}
                       </div>
-                      {/* Rows */}
-                      {form.pricingRules.map((rule, idx) => (
-                        <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr 40px', gap: '12px', padding: '8px 16px', borderBottom: idx < form.pricingRules.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none', alignItems: 'center' }}>
-                          <input
-                            type="text"
-                            value={rule.key}
-                            onChange={e => {
-                              const updated = [...form.pricingRules];
-                              updated[idx] = { ...updated[idx], key: e.target.value };
-                              setForm(prev => ({ ...prev, pricingRules: updated }));
-                            }}
-                            placeholder="e.g. 5"
-                            className="input"
-                            style={{ padding: '8px 10px', fontSize: '13px' }}
-                          />
-                          <input
-                            type="text"
-                            value={rule.label}
-                            onChange={e => {
-                              const updated = [...form.pricingRules];
-                              updated[idx] = { ...updated[idx], label: e.target.value };
-                              setForm(prev => ({ ...prev, pricingRules: updated }));
-                            }}
-                            placeholder="e.g. 5-min script"
-                            className="input"
-                            style={{ padding: '8px 10px', fontSize: '13px' }}
-                          />
-                          <input
-                            type="number"
-                            value={rule.cost}
-                            onChange={e => {
-                              const updated = [...form.pricingRules];
-                              updated[idx] = { ...updated[idx], cost: e.target.value };
-                              setForm(prev => ({ ...prev, pricingRules: updated }));
-                            }}
-                            placeholder="0"
-                            min="0"
-                            className="input"
-                            style={{ padding: '8px 10px', fontSize: '13px' }}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const updated = form.pricingRules.filter((_, i) => i !== idx);
-                              setForm(prev => ({ ...prev, pricingRules: updated }));
-                            }}
-                            style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '18px', padding: '4px', borderRadius: '6px', transition: 'all 0.15s', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                            onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; }}
-                            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'none'; }}
-                          >
-                            ×
+                    )}
+                    <button type="button" onClick={() => setForm(prev => ({ ...prev, pricingRules: [...prev.pricingRules, { key: '', label: '', cost: '' }] }))} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', borderRadius: '10px', border: '1px dashed var(--glass-border)', background: 'transparent', color: 'var(--accent-primary)', fontSize: '13px', fontWeight: 600, cursor: 'pointer', width: '100%', justifyContent: 'center' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(139,92,246,0.08)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                      + Add Pricing Rule
+                    </button>
+                  </div>
+                )}
+
+                {/* Components Editor */}
+                {form.pricingMode === 'components' && (
+                  <div style={{ marginTop: '4px' }}>
+                    <p className="text-xs" style={{ color: 'var(--text-muted)', marginBottom: '12px' }}>Define dimensions (e.g. Model, Resolution). App calculates: base cost × multiplier. Change here → instant effect.</p>
+                    
+                    {form.pricingComponents.map((comp, cIdx) => (
+                      <div key={cIdx} style={{ border: '1px solid var(--glass-border)', borderRadius: '12px', overflow: 'hidden', marginBottom: '16px' }}>
+                        {/* Component Header */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid var(--glass-border)' }}>
+                          <input type="text" value={comp.name} onChange={e => { const u = [...form.pricingComponents]; u[cIdx] = { ...u[cIdx], name: e.target.value }; setForm(prev => ({ ...prev, pricingComponents: u })); }} placeholder="e.g. model" className="input" style={{ padding: '6px 10px', fontSize: '13px', maxWidth: '120px' }} />
+                          <input type="text" value={comp.label} onChange={e => { const u = [...form.pricingComponents]; u[cIdx] = { ...u[cIdx], label: e.target.value }; setForm(prev => ({ ...prev, pricingComponents: u })); }} placeholder="e.g. AI Model" className="input" style={{ padding: '6px 10px', fontSize: '13px', flex: 1 }} />
+                          <select value={comp.type} onChange={e => { const u = [...form.pricingComponents]; u[cIdx] = { ...u[cIdx], type: e.target.value }; setForm(prev => ({ ...prev, pricingComponents: u })); }} className="input" style={{ padding: '6px 10px', fontSize: '13px', maxWidth: '140px' }}>
+                            <option value="base">Base Cost</option>
+                            <option value="multiplier">Multiplier</option>
+                          </select>
+                          <button type="button" onClick={() => setForm(prev => ({ ...prev, pricingComponents: prev.pricingComponents.filter((_, i) => i !== cIdx) }))} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '18px', padding: '4px', borderRadius: '6px' }} onMouseEnter={e => e.currentTarget.style.color = '#ef4444'} onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}>×</button>
+                        </div>
+                        
+                        {/* Options Table Header */}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr 40px', gap: '8px', padding: '8px 16px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                          <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>Key</span>
+                          <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>Label</span>
+                          <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>{comp.type === 'multiplier' ? 'Factor' : 'Cost'}</span>
+                          <span></span>
+                        </div>
+                        
+                        {/* Options Rows */}
+                        {comp.options.map((opt, oIdx) => (
+                          <div key={oIdx} style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr 40px', gap: '8px', padding: '6px 16px', borderBottom: oIdx < comp.options.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none', alignItems: 'center' }}>
+                            <input type="text" value={opt.key} onChange={e => { const u = [...form.pricingComponents]; const opts = [...u[cIdx].options]; opts[oIdx] = { ...opts[oIdx], key: e.target.value }; u[cIdx] = { ...u[cIdx], options: opts }; setForm(prev => ({ ...prev, pricingComponents: u })); }} placeholder="key" className="input" style={{ padding: '6px 8px', fontSize: '12px' }} />
+                            <input type="text" value={opt.label} onChange={e => { const u = [...form.pricingComponents]; const opts = [...u[cIdx].options]; opts[oIdx] = { ...opts[oIdx], label: e.target.value }; u[cIdx] = { ...u[cIdx], options: opts }; setForm(prev => ({ ...prev, pricingComponents: u })); }} placeholder="label" className="input" style={{ padding: '6px 8px', fontSize: '12px' }} />
+                            <input type="number" value={opt.value} onChange={e => { const u = [...form.pricingComponents]; const opts = [...u[cIdx].options]; opts[oIdx] = { ...opts[oIdx], value: e.target.value }; u[cIdx] = { ...u[cIdx], options: opts }; setForm(prev => ({ ...prev, pricingComponents: u })); }} placeholder="0" step={comp.type === 'multiplier' ? '0.1' : '1'} className="input" style={{ padding: '6px 8px', fontSize: '12px' }} />
+                            <button type="button" onClick={() => { const u = [...form.pricingComponents]; u[cIdx] = { ...u[cIdx], options: u[cIdx].options.filter((_, i) => i !== oIdx) }; setForm(prev => ({ ...prev, pricingComponents: u })); }} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '16px' }} onMouseEnter={e => e.currentTarget.style.color = '#ef4444'} onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}>×</button>
+                          </div>
+                        ))}
+                        
+                        {/* Add Option Button */}
+                        <div style={{ padding: '8px 16px' }}>
+                          <button type="button" onClick={() => { const u = [...form.pricingComponents]; u[cIdx] = { ...u[cIdx], options: [...u[cIdx].options, { key: '', label: '', value: '' }] }; setForm(prev => ({ ...prev, pricingComponents: u })); }} style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-primary)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 600, padding: '4px 0' }}>
+                            + Add Option
                           </button>
                         </div>
-                      ))}
-                    </div>
-                  )}
+                      </div>
+                    ))}
 
-                  <button
-                    type="button"
-                    onClick={() => setForm(prev => ({ ...prev, pricingRules: [...prev.pricingRules, { key: '', label: '', cost: '' }] }))}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: '8px',
-                      padding: '10px 16px', borderRadius: '10px',
-                      border: '1px dashed var(--glass-border)',
-                      background: 'transparent',
-                      color: 'var(--accent-primary)',
-                      fontSize: '13px', fontWeight: 600,
-                      cursor: 'pointer', transition: 'all 0.2s', width: '100%', justifyContent: 'center',
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(139,92,246,0.08)'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    Add Pricing Rule
-                  </button>
-                </div>
+                    <button type="button" onClick={() => setForm(prev => ({ ...prev, pricingComponents: [...prev.pricingComponents, { name: '', label: '', type: 'base', options: [{ key: '', label: '', value: '' }] }] }))} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', borderRadius: '10px', border: '1px dashed var(--glass-border)', background: 'transparent', color: 'var(--accent-primary)', fontSize: '13px', fontWeight: 600, cursor: 'pointer', width: '100%', justifyContent: 'center' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(139,92,246,0.08)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                      + Add Component
+                    </button>
+                  </div>
+                )}
               </>
             )}
           </div>

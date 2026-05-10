@@ -52,8 +52,10 @@ export async function GET(request) {
         defaultCost: app.creditCost,
         maxCost: config.maxCreditCost || app.creditCost * 5,
         isFree: app.isFree,
+        pricingMode: config.pricingMode || 'fixed',
         pricingRules: config.pricingRules || null,
         pricingLabels: config.pricingLabels || null,
+        pricingComponents: config.pricingComponents || null,
       },
       {
         headers: {
