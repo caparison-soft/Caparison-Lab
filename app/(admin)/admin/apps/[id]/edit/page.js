@@ -39,6 +39,8 @@ export default function EditAppPage() {
     iconUrl: '',
     coverImageUrl: '',
     externalUrl: '',
+    maxCreditCost: '',
+    pricingRules: [],  // [{ key, label, cost }]
   });
 
   useEffect(() => {
@@ -47,6 +49,16 @@ export default function EditAppPage() {
         const res = await fetch(`/api/admin/apps/${params.id}`);
         if (!res.ok) throw new Error('App not found');
         const app = await res.json();
+        const config = app.configJson || {};
+        // Convert pricingRules/pricingLabels objects to array format for the editor
+        const rulesObj = config.pricingRules || {};
+        const labelsObj = config.pricingLabels || {};
+        const pricingRules = Object.keys(rulesObj).map(key => ({
+          key,
+          label: labelsObj[key] || '',
+          cost: rulesObj[key],
+        }));
+
         setForm({
           name: app.name || '',
           slug: app.slug || '',
@@ -60,6 +72,8 @@ export default function EditAppPage() {
           iconUrl: app.iconUrl || '',
           coverImageUrl: app.coverImageUrl || '',
           externalUrl: app.externalUrl || '',
+          maxCreditCost: config.maxCreditCost || '',
+          pricingRules,
         });
       } catch (err) {
         setError(err.message);
@@ -84,12 +98,31 @@ export default function EditAppPage() {
     setSaving(true);
 
     try {
+      // Build configJson from form fields
+      const pricingRules = {};
+      const pricingLabels = {};
+      form.pricingRules.forEach(rule => {
+        if (rule.key && rule.cost !== '' && rule.cost !== undefined) {
+          pricingRules[rule.key] = parseInt(rule.cost) || 0;
+          if (rule.label) pricingLabels[rule.key] = rule.label;
+        }
+      });
+
+      const configJson = {
+        ...(form.maxCreditCost ? { maxCreditCost: parseInt(form.maxCreditCost) } : {}),
+        ...(Object.keys(pricingRules).length > 0 ? { pricingRules } : {}),
+        ...(Object.keys(pricingLabels).length > 0 ? { pricingLabels } : {}),
+      };
+
+      const { pricingRules: _pr, maxCreditCost: _mc, ...formWithoutPricing } = form;
+
       const res = await fetch(`/api/admin/apps/${params.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...form,
+          ...formWithoutPricing,
           creditCost: parseInt(form.creditCost) || 0,
+          configJson: Object.keys(configJson).length > 0 ? configJson : null,
         })
       });
 
@@ -263,13 +296,119 @@ export default function EditAppPage() {
             </div>
 
             {!form.isFree && (
-              <div className="input-group">
-                <label className="input-label">Credit Cost per Use</label>
-                <div className="flex items-center gap-3">
-                  <input type="number" name="creditCost" value={form.creditCost} onChange={handleChange} min="0" className="input" style={{ maxWidth: '160px' }} />
-                  <span className="text-sm" style={{ color: 'var(--text-muted)' }}>credits per generation</span>
+              <>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div className="input-group">
+                    <label className="input-label">Default Credit Cost</label>
+                    <div className="flex items-center gap-3">
+                      <input type="number" name="creditCost" value={form.creditCost} onChange={handleChange} min="0" className="input" style={{ maxWidth: '160px' }} />
+                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>fallback</span>
+                    </div>
+                  </div>
+                  <div className="input-group">
+                    <label className="input-label">Max Credit Cost</label>
+                    <div className="flex items-center gap-3">
+                      <input type="number" name="maxCreditCost" value={form.maxCreditCost} onChange={handleChange} min="0" className="input" style={{ maxWidth: '160px' }} placeholder="Auto" />
+                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>safety cap</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
+
+                {/* Dynamic Pricing Rules */}
+                <div style={{ marginTop: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <div>
+                      <label className="input-label" style={{ marginBottom: '2px' }}>Dynamic Pricing Rules</label>
+                      <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Apps fetch these at runtime. Change here → instant effect, no code changes.</p>
+                    </div>
+                  </div>
+
+                  {form.pricingRules.length > 0 && (
+                    <div style={{ border: '1px solid var(--glass-border)', borderRadius: '12px', overflow: 'hidden', marginBottom: '12px' }}>
+                      {/* Header */}
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr 40px', gap: '12px', padding: '10px 16px', background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid var(--glass-border)' }}>
+                        <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Key</span>
+                        <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Label</span>
+                        <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Credits</span>
+                        <span></span>
+                      </div>
+                      {/* Rows */}
+                      {form.pricingRules.map((rule, idx) => (
+                        <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr 40px', gap: '12px', padding: '8px 16px', borderBottom: idx < form.pricingRules.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none', alignItems: 'center' }}>
+                          <input
+                            type="text"
+                            value={rule.key}
+                            onChange={e => {
+                              const updated = [...form.pricingRules];
+                              updated[idx] = { ...updated[idx], key: e.target.value };
+                              setForm(prev => ({ ...prev, pricingRules: updated }));
+                            }}
+                            placeholder="e.g. 5"
+                            className="input"
+                            style={{ padding: '8px 10px', fontSize: '13px' }}
+                          />
+                          <input
+                            type="text"
+                            value={rule.label}
+                            onChange={e => {
+                              const updated = [...form.pricingRules];
+                              updated[idx] = { ...updated[idx], label: e.target.value };
+                              setForm(prev => ({ ...prev, pricingRules: updated }));
+                            }}
+                            placeholder="e.g. 5-min script"
+                            className="input"
+                            style={{ padding: '8px 10px', fontSize: '13px' }}
+                          />
+                          <input
+                            type="number"
+                            value={rule.cost}
+                            onChange={e => {
+                              const updated = [...form.pricingRules];
+                              updated[idx] = { ...updated[idx], cost: e.target.value };
+                              setForm(prev => ({ ...prev, pricingRules: updated }));
+                            }}
+                            placeholder="0"
+                            min="0"
+                            className="input"
+                            style={{ padding: '8px 10px', fontSize: '13px' }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = form.pricingRules.filter((_, i) => i !== idx);
+                              setForm(prev => ({ ...prev, pricingRules: updated }));
+                            }}
+                            style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '18px', padding: '4px', borderRadius: '6px', transition: 'all 0.15s', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                            onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; }}
+                            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'none'; }}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => setForm(prev => ({ ...prev, pricingRules: [...prev.pricingRules, { key: '', label: '', cost: '' }] }))}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '8px',
+                      padding: '10px 16px', borderRadius: '10px',
+                      border: '1px dashed var(--glass-border)',
+                      background: 'transparent',
+                      color: 'var(--accent-primary)',
+                      fontSize: '13px', fontWeight: 600,
+                      cursor: 'pointer', transition: 'all 0.2s', width: '100%', justifyContent: 'center',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(139,92,246,0.08)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Add Pricing Rule
+                  </button>
+                </div>
+              </>
             )}
           </div>
         </div>

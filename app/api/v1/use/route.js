@@ -47,6 +47,36 @@ export async function POST(request) {
     // 3. Determine credit cost
     const creditCost = overrideCost !== undefined ? overrideCost : app.creditCost;
 
+    // 3.5 Safety check — reject if cost exceeds app's max allowed
+    const appConfig = app.configJson || {};
+    const maxCost = appConfig.maxCreditCost || app.creditCost * 5;
+    if (creditCost > maxCost) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: 'COST_EXCEEDS_LIMIT',
+          message: `Requested cost (${creditCost}) exceeds maximum allowed (${maxCost}).`,
+        },
+        { status: 400, headers: { 'Access-Control-Allow-Origin': '*' } }
+      );
+    }
+
+    // 3.6 Validate against pricing rules if they exist and cost is overridden
+    const rules = appConfig.pricingRules;
+    if (rules && overrideCost !== undefined) {
+      const validCosts = Object.values(rules).map(Number);
+      if (!validCosts.includes(creditCost)) {
+        return NextResponse.json(
+          {
+            ok: false,
+            error: 'INVALID_COST',
+            message: `Cost ${creditCost} is not a valid pricing option for this app.`,
+          },
+          { status: 400, headers: { 'Access-Control-Allow-Origin': '*' } }
+        );
+      }
+    }
+
     // 4. Check if the app is free or user has enough credits
     const isFreeAction = app.isFree || creditCost === 0;
     if (!isFreeAction && user.credits < creditCost) {
