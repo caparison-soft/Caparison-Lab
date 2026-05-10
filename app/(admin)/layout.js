@@ -49,7 +49,7 @@ export default async function AdminLayout({ children }) {
           background: 'var(--gradient-mesh)' 
         }}></div>
         
-        <Topbar />
+        <Topbar user={user} role={dbUser.role} />
         
         <main style={{ flex: 1, padding: '32px', position: 'relative', zIndex: 10 }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
