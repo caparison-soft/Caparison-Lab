@@ -161,7 +161,14 @@ export default async function DashboardPage() {
                       backgroundPosition: 'center',
                     }}></div>
                     <div style={{ position: 'absolute', top: '12px', right: '12px' }}>
-                      <span className={`badge ${app.isFree ? 'badge-free' : 'badge-primary'}`}>{app.isFree ? 'Free' : app.category}</span>
+                      <span style={{
+                        padding: '4px 10px', borderRadius: '99px', fontSize: '11px', fontWeight: 700,
+                        background: app.accessType === 'SUBSCRIBER' ? 'rgba(168,85,247,0.15)' : app.accessType === 'SUBSCRIBER_CREDIT' ? 'linear-gradient(90deg, rgba(168,85,247,0.15), rgba(234,179,8,0.15))' : 'rgba(234,179,8,0.15)',
+                        color: app.accessType === 'SUBSCRIBER' ? '#c084fc' : app.accessType === 'SUBSCRIBER_CREDIT' ? '#e9d5ff' : '#fbbf24',
+                        border: `1px solid ${app.accessType === 'SUBSCRIBER' ? 'rgba(168,85,247,0.3)' : app.accessType === 'SUBSCRIBER_CREDIT' ? 'rgba(168,85,247,0.3)' : 'rgba(234,179,8,0.3)'}`,
+                      }}>
+                        {app.accessType === 'CREDIT' ? '🪙 Pay Per Use' : app.accessType === 'SUBSCRIBER' ? '⭐ Pro Only' : '💎 Pro + Credits'}
+                      </span>
                     </div>
                   </div>
                   <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -176,7 +183,7 @@ export default async function DashboardPage() {
                       <div>
                         <h4 style={{ fontWeight: 700, fontSize: '15px', lineHeight: 1.3 }}>{app.name}</h4>
                         <p style={{ fontSize: '12px', color: '#a1a1aa', marginTop: '2px' }}>
-                          {app.isFree ? '0 Credits' : `${app.creditCost} Credits / Use`}
+                          {app.accessType === 'SUBSCRIBER' ? '∞ Unlimited' : `${app.creditCost} Credits / Use`}
                         </p>
                       </div>
                     </div>

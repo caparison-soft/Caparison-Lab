@@ -85,8 +85,13 @@ export default async function AppDetailPage({ params }) {
                 <span className={`badge ${categoryColors[app.category] || 'badge-primary'}`}>
                   {app.category}
                 </span>
-                <span style={{ padding: '4px 10px', fontSize: '11px', fontWeight: 600, border: '1px solid rgba(255,255,255,0.1)', borderRadius: '9999px', textTransform: 'uppercase' }}>
-                  {app.appType.replace('_', ' ')}
+                <span style={{
+                  padding: '4px 10px', fontSize: '11px', fontWeight: 700, borderRadius: '9999px',
+                  background: app.accessType === 'SUBSCRIBER' ? 'rgba(168,85,247,0.15)' : app.accessType === 'SUBSCRIBER_CREDIT' ? 'rgba(168,85,247,0.15)' : 'rgba(234,179,8,0.15)',
+                  color: app.accessType === 'SUBSCRIBER' ? '#c084fc' : app.accessType === 'SUBSCRIBER_CREDIT' ? '#e9d5ff' : '#fbbf24',
+                  border: `1px solid ${app.accessType === 'SUBSCRIBER' || app.accessType === 'SUBSCRIBER_CREDIT' ? 'rgba(168,85,247,0.3)' : 'rgba(234,179,8,0.3)'}`,
+                }}>
+                  {app.accessType === 'CREDIT' ? '🪙 Pay Per Use' : app.accessType === 'SUBSCRIBER' ? '⭐ Pro Only' : '💎 Pro + Credits'}
                 </span>
               </div>
               
@@ -94,14 +99,16 @@ export default async function AppDetailPage({ params }) {
                 <div>
                   <p style={{ fontSize: '11px', color: '#a1a1aa', fontWeight: 600, textTransform: 'uppercase', marginBottom: '4px' }}>Cost per use</p>
                   <p style={{ fontSize: '18px', fontWeight: 700, color: '#ffffff' }}>
-                    {app.isFree ? 'Free' : `${app.creditCost} Credits`}
+                    {app.accessType === 'SUBSCRIBER' ? '∞ Unlimited' : `${app.creditCost} Credits`}
                   </p>
                 </div>
-                {!app.isFree && (
-                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(99,102,241,0.2)', color: '#818cf8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: app.accessType === 'SUBSCRIBER' ? 'rgba(168,85,247,0.2)' : 'rgba(99,102,241,0.2)', color: app.accessType === 'SUBSCRIBER' ? '#c084fc' : '#818cf8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {app.accessType === 'SUBSCRIBER' ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  ) : (
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
               <div>

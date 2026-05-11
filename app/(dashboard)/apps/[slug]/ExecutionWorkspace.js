@@ -99,7 +99,7 @@ export default function ExecutionWorkspace({ app }) {
 
             <button 
               onClick={handleExecute} 
-              disabled={isExecuting || (!inputData.trim() && app.appType !== 'UTILITY')}
+              disabled={isExecuting || (!inputData.trim() && app.accessType !== 'SUBSCRIBER')}
               style={{
                 width: '100%',
                 padding: '16px',
@@ -109,8 +109,8 @@ export default function ExecutionWorkspace({ app }) {
                 fontWeight: 700,
                 fontSize: '16px',
                 border: 'none',
-                cursor: (isExecuting || (!inputData.trim() && app.appType !== 'UTILITY')) ? 'not-allowed' : 'pointer',
-                opacity: (isExecuting || (!inputData.trim() && app.appType !== 'UTILITY')) ? 0.5 : 1,
+                cursor: (isExecuting || (!inputData.trim() && app.accessType !== 'SUBSCRIBER')) ? 'not-allowed' : 'pointer',
+                opacity: (isExecuting || (!inputData.trim() && app.accessType !== 'SUBSCRIBER')) ? 0.5 : 1,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -127,7 +127,7 @@ export default function ExecutionWorkspace({ app }) {
               ) : (
                 <>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                  Generate ({app.isFree ? 'Free' : `${app.creditCost} Credits`})
+                  Generate ({app.accessType === 'SUBSCRIBER' ? 'Unlimited' : `${app.creditCost} Credits`})
                 </>
               )}
             </button>

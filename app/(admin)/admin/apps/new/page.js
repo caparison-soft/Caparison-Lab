@@ -13,11 +13,10 @@ const CATEGORIES = [
   { value: 'UTILITY', label: 'Utility', icon: '⚙️' },
 ];
 
-const APP_TYPES = [
-  { value: 'GENERATION', label: 'Generation', desc: 'Uses credits per generation (e.g. AI image)' },
-  { value: 'RECURRING_FREE', label: 'Recurring Free', desc: 'Free for subscribers, unlimited use' },
-  { value: 'ONE_TIME', label: 'One-Time', desc: 'Single credit purchase to unlock forever' },
-  { value: 'TOOL', label: 'Tool', desc: 'Utility tool, pricing flexible' },
+const ACCESS_TYPES = [
+  { value: 'CREDIT', label: '🪙 Credit', desc: 'Anyone with credits can use — pay per generation' },
+  { value: 'SUBSCRIBER', label: '⭐ Subscriber Only', desc: 'Pro plan required — unlimited use, no credit cost' },
+  { value: 'SUBSCRIBER_CREDIT', label: '💎 Subscriber + Credit', desc: 'Pro plan required + credits per use' },
 ];
 
 export default function NewAppPage() {
@@ -30,9 +29,8 @@ export default function NewAppPage() {
     description: '',
     shortDesc: '',
     category: 'IMAGE',
-    appType: 'GENERATION',
+    accessType: 'CREDIT',
     creditCost: 5,
-    isFree: false,
     iconUrl: '',
     coverImageUrl: '',
     maxCreditCost: '',
@@ -240,31 +238,20 @@ export default function NewAppPage() {
             </div>
 
             <div className="input-group">
-              <label className="input-label">App Type *</label>
+              <label className="input-label">Access Type *</label>
               <div className="flex flex-col gap-3">
-                {APP_TYPES.map(type => (
-                  <button
-                    key={type.value}
-                    type="button"
-                    onClick={() => setForm(prev => ({ ...prev, appType: type.value }))}
-                    className="card p-6 flex items-center gap-4"
-                    style={{
-                      padding: '16px',
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      borderColor: form.appType === type.value ? 'var(--accent-primary)' : undefined,
-                      background: form.appType === type.value ? 'rgba(139, 92, 246, 0.1)' : undefined,
-                      boxShadow: form.appType === type.value ? 'var(--shadow-glow)' : undefined,
-                    }}
-                  >
-                    <div style={{
-                      width: '20px', height: '20px', borderRadius: '50%',
-                      border: `2px solid ${form.appType === type.value ? 'var(--accent-primary)' : 'var(--glass-border)'}`,
+                {ACCESS_TYPES.map(type => (
+                  <button key={type.value} type="button" onClick={() => setForm(prev => ({ ...prev, accessType: type.value }))}
+                    className="card p-6 flex items-center gap-4" style={{ padding: '16px', cursor: 'pointer', textAlign: 'left',
+                      borderColor: form.accessType === type.value ? 'var(--accent-primary)' : undefined,
+                      background: form.accessType === type.value ? 'rgba(139, 92, 246, 0.1)' : undefined,
+                      boxShadow: form.accessType === type.value ? 'var(--shadow-glow)' : undefined,
+                    }}>
+                    <div style={{ width: '20px', height: '20px', borderRadius: '50%',
+                      border: `2px solid ${form.accessType === type.value ? 'var(--accent-primary)' : 'var(--glass-border)'}`,
                       display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                     }}>
-                      {form.appType === type.value && (
-                        <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--accent-primary)' }} />
-                      )}
+                      {form.accessType === type.value && <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--accent-primary)' }} />}
                     </div>
                     <div>
                       <p className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{type.label}</p>
@@ -277,29 +264,13 @@ export default function NewAppPage() {
           </div>
         </div>
 
-        {/* Pricing */}
+        {/* Pricing — only for CREDIT and SUBSCRIBER_CREDIT */}
+        {form.accessType !== 'SUBSCRIBER' && (
         <div className="card" style={{ marginBottom: '24px' }}>
           <div className="px-6 py-5 border-b border-white/5">
             <h3 style={{ fontSize: '1.1rem' }}>Pricing</h3>
           </div>
           <div className="p-6 flex flex-col gap-5">
-            <div className="flex items-center gap-4">
-              <label className="flex items-center gap-3" style={{ cursor: 'pointer' }}>
-                <div onClick={() => setForm(prev => ({ ...prev, isFree: !prev.isFree }))}
-                  style={{ width: '44px', height: '24px', borderRadius: '12px', position: 'relative',
-                    background: form.isFree ? 'var(--color-success)' : 'var(--glass-bg)',
-                    border: `1px solid ${form.isFree ? 'var(--color-success)' : 'var(--glass-border)'}`,
-                    cursor: 'pointer', transition: 'all 0.2s',
-                  }}>
-                  <div style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'white',
-                    position: 'absolute', top: '2px', left: form.isFree ? '22px' : '2px', transition: 'left 0.2s',
-                  }} />
-                </div>
-                <span className="font-medium text-sm">This app is free</span>
-              </label>
-            </div>
-
-            {!form.isFree && (
               <>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                   <div className="input-group">
@@ -410,10 +381,9 @@ export default function NewAppPage() {
                   </div>
                 )}
               </>
-            )}
           </div>
         </div>
-
+        )}
         {/* Media */}
         <div className="card" style={{ marginBottom: '24px' }}>
           <div className="px-6 py-5 border-b border-white/5">
@@ -501,11 +471,9 @@ export default function NewAppPage() {
                   <span className={`badge ${categoryColors[form.category] || 'badge-primary'}`}>
                     {form.category}
                   </span>
-                  {form.isFree ? (
-                    <span className="badge badge-free">FREE</span>
-                  ) : (
-                    <span className="text-sm font-semibold">{form.creditCost} credits</span>
-                  )}
+                  <span className="text-sm font-semibold">
+                    {form.accessType === 'SUBSCRIBER' ? '∞ Unlimited' : `${form.creditCost} credits`}
+                  </span>
                 </div>
               </div>
             </div>

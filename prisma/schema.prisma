@@ -39,11 +39,10 @@ model App {
   description   String
   shortDesc     String?      @map("short_desc")
   category      AppCategory
-  appType       AppType      @default(TOOL) @map("app_type")
+  accessType    AccessType   @default(CREDIT) @map("access_type")
   iconUrl       String?      @map("icon_url")
   coverImageUrl String?      @map("cover_image_url")
   creditCost    Int          @default(0) @map("credit_cost")
-  isFree        Boolean      @default(false) @map("is_free")
   isActive      Boolean      @default(true) @map("is_active")
   externalUrl   String?      @map("external_url")
   configJson    Json?        @map("config_json")
@@ -143,11 +142,10 @@ enum AppCategory {
   UTILITY
 }
 
-enum AppType {
-  GENERATION
-  RECURRING_FREE
-  ONE_TIME
-  TOOL
+enum AccessType {
+  CREDIT              // Anyone with credits can use — pay per generation
+  SUBSCRIBER          // Pro plan only — unlimited use, no credit cost
+  SUBSCRIBER_CREDIT   // Pro plan + credits per use
 }
 
 enum SubStatus {

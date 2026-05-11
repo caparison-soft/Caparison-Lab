@@ -126,8 +126,8 @@ export default function AdminAppsPage() {
         <div style={{ ...cardStyle, padding: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p style={{ color: '#a1a1aa', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>Free Apps</p>
-              <h3 style={{ fontSize: '32px', fontWeight: 700 }}>{apps.filter(a => a.isFree).length}</h3>
+              <p style={{ color: '#a1a1aa', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>Subscriber Apps</p>
+              <h3 style={{ fontSize: '32px', fontWeight: 700 }}>{apps.filter(a => a.accessType === 'SUBSCRIBER' || a.accessType === 'SUBSCRIBER_CREDIT').length}</h3>
             </div>
             <div style={statIconStyle('#a78bfa')}>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
@@ -190,10 +190,12 @@ export default function AdminAppsPage() {
                       {app.category}
                     </span>
                   </td>
-                  <td style={{ color: 'var(--text-secondary)' }}>{app.appType.replace('_', ' ')}</td>
+                  <td style={{ color: 'var(--text-secondary)' }}>
+                    {app.accessType === 'CREDIT' ? '🪙 Credit' : app.accessType === 'SUBSCRIBER' ? '⭐ Sub Only' : '💎 Sub+Credit'}
+                  </td>
                   <td>
-                    {app.isFree ? (
-                      <span className="badge badge-free">FREE</span>
+                    {app.accessType === 'SUBSCRIBER' ? (
+                      <span className="badge badge-info">Unlimited</span>
                     ) : (
                       <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>{app.creditCost} credits</span>
                     )}

@@ -148,12 +148,14 @@ export default function MarketplaceClient({ initialApps }) {
                   }}
                 ></div>
                 <div style={{ position: 'absolute', top: '12px', right: '12px', display: 'flex', gap: '8px' }}>
-                  <span className={`badge ${categoryColors[app.category] || 'badge-primary'}`} style={{ backdropFilter: 'blur(8px)', background: 'rgba(99,102,241,0.8)' }}>
-                    {app.category}
+                  <span style={{
+                    padding: '4px 10px', borderRadius: '99px', fontSize: '11px', fontWeight: 700,
+                    backdropFilter: 'blur(8px)',
+                    background: app.accessType === 'SUBSCRIBER' ? 'rgba(168,85,247,0.85)' : app.accessType === 'SUBSCRIBER_CREDIT' ? 'rgba(168,85,247,0.85)' : 'rgba(234,179,8,0.85)',
+                    color: '#fff',
+                  }}>
+                    {app.accessType === 'CREDIT' ? '🪙 Pay Per Use' : app.accessType === 'SUBSCRIBER' ? '⭐ Pro Only' : '💎 Pro + Credits'}
                   </span>
-                  {app.isFree && (
-                    <span className="badge badge-free" style={{ backdropFilter: 'blur(8px)', background: 'rgba(16,185,129,0.8)' }}>FREE</span>
-                  )}
                 </div>
               </div>
               
@@ -169,7 +171,7 @@ export default function MarketplaceClient({ initialApps }) {
                   <div>
                     <h3 style={{ fontWeight: 700, fontSize: '18px', color: '#ffffff', lineHeight: 1.2, marginBottom: '2px' }}>{app.name}</h3>
                     <p style={{ fontSize: '12px', color: '#a1a1aa', fontWeight: 500 }}>
-                      {app.isFree ? 'Unlimited Uses' : `${app.creditCost} Credits`}
+                      {app.accessType === 'SUBSCRIBER' ? '∞ Unlimited' : `${app.creditCost} Credits`}
                     </p>
                   </div>
                 </div>
@@ -180,7 +182,7 @@ export default function MarketplaceClient({ initialApps }) {
                 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '16px', marginTop: 'auto' }}>
                   <span style={{ fontSize: '12px', color: '#71717a', textTransform: 'uppercase' }}>
-                    {app.appType.replace('_', ' ')}
+                    {app.accessType === 'CREDIT' ? '🪙 Credit' : app.accessType === 'SUBSCRIBER' ? '⭐ Subscriber' : '💎 Sub+Credit'}
                   </span>
                   <span style={{ fontSize: '14px', fontWeight: 500, color: '#818cf8', display: 'flex', alignItems: 'center', gap: '4px' }}>
                     Open App

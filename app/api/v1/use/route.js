@@ -52,11 +52,7 @@ export async function POST(request) {
     const maxCost = appConfig.maxCreditCost || app.creditCost * 5;
     if (creditCost > maxCost) {
       return NextResponse.json(
-        {
-          ok: false,
-          error: 'COST_EXCEEDS_LIMIT',
-          message: `Requested cost (${creditCost}) exceeds maximum allowed (${maxCost}).`,
-        },
+        { ok: false, error: 'COST_EXCEEDS_LIMIT', message: `Requested cost (${creditCost}) exceeds maximum allowed (${maxCost}).` },
         { status: 400, headers: { 'Access-Control-Allow-Origin': '*' } }
       );
     }
@@ -68,49 +64,53 @@ export async function POST(request) {
       const validCosts = Object.values(rules).map(Number);
       if (!validCosts.includes(creditCost)) {
         return NextResponse.json(
-          {
-            ok: false,
-            error: 'INVALID_COST',
-            message: `Cost ${creditCost} is not a valid pricing option for this app.`,
-          },
+          { ok: false, error: 'INVALID_COST', message: `Cost ${creditCost} is not a valid pricing option for this app.` },
           { status: 400, headers: { 'Access-Control-Allow-Origin': '*' } }
         );
       }
     }
-    // In 'components' mode, the app calculates cost from component data.
-    // Only the maxCreditCost cap (checked above in 3.5) prevents abuse.
 
-    // 4. Check if the app is free or user has enough credits
-    const isFreeAction = app.isFree || creditCost === 0;
-    if (!isFreeAction && user.credits < creditCost) {
+    // 4. Access Type Validation
+    const accessType = app.accessType || 'CREDIT';
+
+    // 4.1 Subscription check for SUBSCRIBER and SUBSCRIBER_CREDIT apps
+    if (accessType === 'SUBSCRIBER' || accessType === 'SUBSCRIBER_CREDIT') {
+      const isSubscribed = user.subscriptionTier !== 'FREE'
+        && (!user.subscriptionExpiry || new Date(user.subscriptionExpiry) > new Date());
+
+      if (!isSubscribed) {
+        return NextResponse.json(
+          { ok: false, error: 'SUBSCRIPTION_REQUIRED', message: 'This app requires an active Pro subscription. Upgrade to Pro to unlock.' },
+          { status: 403, headers: { 'Access-Control-Allow-Origin': '*' } }
+        );
+      }
+    }
+
+    // 4.2 Credit check for CREDIT and SUBSCRIBER_CREDIT apps
+    const needsCredits = accessType === 'CREDIT' || accessType === 'SUBSCRIBER_CREDIT';
+    if (needsCredits && creditCost > 0 && user.credits < creditCost) {
       return NextResponse.json(
-        {
-          ok: false,
-          error: 'INSUFFICIENT_CREDITS',
-          message: 'User does not have enough credits for this action.',
-          required: creditCost,
-          available: user.credits,
-        },
+        { ok: false, error: 'INSUFFICIENT_CREDITS', message: 'User does not have enough credits.', required: creditCost, available: user.credits },
         { status: 402, headers: { 'Access-Control-Allow-Origin': '*' } }
       );
     }
 
+    // 4.3 SUBSCRIBER apps — no credit deduction
+    const shouldDeductCredits = needsCredits && creditCost > 0;
+
     // 5. Atomic: deduct credits + create generation record
     const [generation] = await prisma.$transaction([
-      // Create generation record
       prisma.generation.create({
         data: {
           userId: user.id,
           appId: app.id,
           inputData,
           status: 'PROCESSING',
-          creditsUsed: isFreeAction ? 0 : creditCost,
+          creditsUsed: shouldDeductCredits ? creditCost : 0,
         },
       }),
-      // Deduct credits (skip if free)
-      ...(isFreeAction
-        ? []
-        : [
+      ...(shouldDeductCredits
+        ? [
             prisma.user.update({
               where: { id: user.id },
               data: { credits: { decrement: creditCost } },
@@ -128,6 +128,12 @@ export async function POST(request) {
               where: { id: app.id },
               data: { usageCount: { increment: 1 } },
             }),
+          ]
+        : [
+            prisma.app.update({
+              where: { id: app.id },
+              data: { usageCount: { increment: 1 } },
+            }),
           ]),
     ]);
 
@@ -141,7 +147,7 @@ export async function POST(request) {
       {
         ok: true,
         generationId: generation.id,
-        creditsDeducted: isFreeAction ? 0 : creditCost,
+        creditsDeducted: shouldDeductCredits ? creditCost : 0,
         remainingCredits: updatedUser.credits,
       },
       { headers: { 'Access-Control-Allow-Origin': '*' } }

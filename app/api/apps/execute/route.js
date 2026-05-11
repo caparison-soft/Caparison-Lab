@@ -47,9 +47,23 @@ export async function POST(request) {
     if (!dbUser) return NextResponse.json({ error: 'User not found in DB' }, { status: 404 });
     if (!app.isActive) return NextResponse.json({ error: 'App is currently disabled' }, { status: 400 });
 
-    const creditCost = app.isFree ? 0 : app.creditCost;
+    // Access Type validation
+    const accessType = app.accessType || 'CREDIT';
 
-    if (dbUser.credits < creditCost) {
+    // Subscription check for SUBSCRIBER and SUBSCRIBER_CREDIT apps
+    if (accessType === 'SUBSCRIBER' || accessType === 'SUBSCRIBER_CREDIT') {
+      const isSubscribed = dbUser.subscriptionTier !== 'FREE'
+        && (!dbUser.subscriptionExpiry || new Date(dbUser.subscriptionExpiry) > new Date());
+      if (!isSubscribed) {
+        return NextResponse.json({ error: 'This app requires a Pro subscription.' }, { status: 403 });
+      }
+    }
+
+    // Credit cost — SUBSCRIBER apps are unlimited (no credits)
+    const needsCredits = accessType === 'CREDIT' || accessType === 'SUBSCRIBER_CREDIT';
+    const creditCost = needsCredits ? app.creditCost : 0;
+
+    if (needsCredits && dbUser.credits < creditCost) {
       return NextResponse.json(
         { error: 'Insufficient credits', required: creditCost, available: dbUser.credits },
         { status: 402 }

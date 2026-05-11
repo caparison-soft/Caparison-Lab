@@ -12,7 +12,7 @@
  *   ok: true,
  *   defaultCost: 10,
  *   maxCost: 50,
- *   isFree: false,
+ *   accessType: "CREDIT",
  *   pricingRules: { "1": 3, "3": 5, "5": 8, "10": 15, "15": 25 },
  *   pricingLabels: { "1": "1-min script", "3": "3-min script", ... }
  * }
@@ -49,9 +49,9 @@ export async function GET(request) {
       {
         ok: true,
         appName: app.name,
+        accessType: app.accessType,
         defaultCost: app.creditCost,
         maxCost: config.maxCreditCost || app.creditCost * 5,
-        isFree: app.isFree,
         pricingMode: config.pricingMode || 'fixed',
         pricingRules: config.pricingRules || null,
         pricingLabels: config.pricingLabels || null,

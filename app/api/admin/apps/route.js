@@ -28,7 +28,7 @@ export async function GET() {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { name, slug, description, shortDesc, category, appType, creditCost, isFree, iconUrl, coverImageUrl, externalUrl, configJson } = body;
+    const { name, slug, description, shortDesc, category, accessType, creditCost, iconUrl, coverImageUrl, externalUrl, configJson } = body;
 
     // Validation
     if (!name || !slug || !description || !category) {
@@ -54,9 +54,8 @@ export async function POST(request) {
         description,
         shortDesc: shortDesc || null,
         category,
-        appType: appType || 'TOOL',
+        accessType: accessType || 'CREDIT',
         creditCost: parseInt(creditCost) || 0,
-        isFree: isFree || false,
         iconUrl: iconUrl || null,
         coverImageUrl: coverImageUrl || null,
         externalUrl: externalUrl || null,
