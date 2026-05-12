@@ -43,6 +43,7 @@ function AppCard({ app, expanded, onToggle }) {
         transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
         cursor: 'default',
         position: 'relative',
+        alignSelf: 'start',
       }}
     >
       {/* ── Cover Image Area ───────────────────────────────── */}
@@ -467,6 +468,7 @@ export default function MarketplaceClient({ initialApps }) {
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
             gap: '24px',
+            alignItems: 'start',
           }}
         >
           {filteredApps.map((app) => (
