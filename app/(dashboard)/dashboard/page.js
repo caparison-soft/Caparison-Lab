@@ -140,60 +140,70 @@ export default async function DashboardPage() {
             <Link href="/apps" style={{ fontSize: '14px', color: '#818cf8', fontWeight: 500 }}>View all</Link>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', alignItems: 'start' }}>
             {featuredApps.length === 0 ? (
               <div style={{ gridColumn: 'span 2', padding: '40px', textAlign: 'center', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', background: 'rgba(255,255,255,0.03)' }}>
                 <p style={{ color: '#a1a1aa' }}>No apps available yet.</p>
               </div>
             ) : (
-              featuredApps.map((app) => (
-                <div 
-                  key={app.id} 
-                  style={{ ...cardStyle, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
-                >
-                  <Link href={`/apps/${app.slug}`} style={{ position: 'absolute', inset: 0, zIndex: 1 }} aria-label={`Open ${app.name}`}></Link>
-                  <div style={{ height: '128px', background: '#1a1a24', position: 'relative' }}>
+              featuredApps.map((app) => {
+                const coverBg = app.coverImageUrl
+                  ? `url(${app.coverImageUrl})`
+                  : 'linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4338ca 100%)';
+                const accessLabel = app.accessType === 'CREDIT' ? '🪙 Pay Per Use' : app.accessType === 'SUBSCRIBER' ? '⭐ Pro Only' : '💎 Pro + Credits';
+                const accessGradient = app.accessType === 'CREDIT'
+                  ? 'linear-gradient(135deg, rgba(234,179,8,0.9), rgba(245,158,11,0.9))'
+                  : 'linear-gradient(135deg, rgba(139,92,246,0.9), rgba(168,85,247,0.9))';
+
+                return (
+                  <Link
+                    key={app.id}
+                    href={`/apps/${app.slug}`}
+                    style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+                  >
                     <div style={{
-                      position: 'absolute',
-                      inset: 0,
-                      background: app.coverImageUrl ? `url(${app.coverImageUrl})` : 'linear-gradient(135deg, rgba(99,102,241,0.3), rgba(139,92,246,0.3))',
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                    }}></div>
-                    <div style={{ position: 'absolute', top: '12px', right: '12px' }}>
-                      <span style={{
-                        padding: '4px 10px', borderRadius: '99px', fontSize: '11px', fontWeight: 700,
-                        background: app.accessType === 'SUBSCRIBER' ? 'rgba(168,85,247,0.15)' : app.accessType === 'SUBSCRIBER_CREDIT' ? 'linear-gradient(90deg, rgba(168,85,247,0.15), rgba(234,179,8,0.15))' : 'rgba(234,179,8,0.15)',
-                        color: app.accessType === 'SUBSCRIBER' ? '#c084fc' : app.accessType === 'SUBSCRIBER_CREDIT' ? '#e9d5ff' : '#fbbf24',
-                        border: `1px solid ${app.accessType === 'SUBSCRIBER' ? 'rgba(168,85,247,0.3)' : app.accessType === 'SUBSCRIBER_CREDIT' ? 'rgba(168,85,247,0.3)' : 'rgba(234,179,8,0.3)'}`,
-                      }}>
-                        {app.accessType === 'CREDIT' ? '🪙 Pay Per Use' : app.accessType === 'SUBSCRIBER' ? '⭐ Pro Only' : '💎 Pro + Credits'}
-                      </span>
-                    </div>
-                  </div>
-                  <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                      <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: 'rgba(99,102,241,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid var(--glass-border)', overflow: 'hidden' }}>
-                        {app.iconUrl ? (
-                          <img src={app.iconUrl} alt={app.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        ) : (
-                          <span style={{ fontSize: '18px' }}>🤖</span>
-                        )}
+                      borderRadius: '20px',
+                      overflow: 'hidden',
+                      background: '#111118',
+                      border: '1px solid rgba(255,255,255,0.06)',
+                      transition: 'all 0.3s ease',
+                    }}>
+                      {/* Cover image */}
+                      <div style={{ position: 'relative', height: '160px', overflow: 'hidden', borderRadius: '20px 20px 16px 16px' }}>
+                        <div style={{ position: 'absolute', inset: 0, backgroundImage: coverBg, backgroundSize: 'cover', backgroundPosition: 'center', transition: 'transform 0.5s ease' }} />
+                        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 50%)' }} />
+
+                        {/* Access badge */}
+                        <div style={{ position: 'absolute', top: '12px', right: '12px', padding: '5px 12px', borderRadius: '99px', background: accessGradient, backdropFilter: 'blur(8px)', fontSize: '11px', fontWeight: 700, color: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.3)' }}>
+                          {accessLabel}
+                        </div>
+
+                        {/* Bottom overlay */}
+                        <div style={{ position: 'absolute', bottom: '14px', left: '14px', right: '14px', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '10px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+                            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+                              {app.iconUrl ? (
+                                <img src={app.iconUrl} alt={app.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                              ) : (
+                                <span style={{ fontSize: '18px' }}>🤖</span>
+                              )}
+                            </div>
+                            <div style={{ minWidth: 0 }}>
+                              <h4 style={{ fontWeight: 700, fontSize: '14px', color: '#fff', lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{app.name}</h4>
+                              <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', marginTop: '2px' }}>
+                                {app.accessType === 'SUBSCRIBER' ? 'Unlimited' : `${app.creditCost} Credits`}
+                              </p>
+                            </div>
+                          </div>
+                          <div style={{ padding: '6px 14px', borderRadius: '8px', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0 }}>
+                            Open App
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <h4 style={{ fontWeight: 700, fontSize: '15px', lineHeight: 1.3 }}>{app.name}</h4>
-                        <p style={{ fontSize: '12px', color: '#a1a1aa', marginTop: '2px' }}>
-                          {app.accessType === 'SUBSCRIBER' ? '∞ Unlimited' : `${app.creditCost} Credits / Use`}
-                        </p>
-                      </div>
                     </div>
-                    <p style={{ fontSize: '14px', color: '#a1a1aa', marginBottom: '16px', flex: 1, lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                      {app.shortDesc || app.description}
-                    </p>
-                    <button className="btn btn-secondary" style={{ width: '100%', fontSize: '14px' }}>Open App</button>
-                  </div>
-                </div>
-              ))
+                  </Link>
+                );
+              })
             )}
           </div>
         </div>
