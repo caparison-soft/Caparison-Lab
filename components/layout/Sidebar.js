@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-export default function Sidebar() {
+export default function Sidebar({ user }) {
   const pathname = usePathname();
 
   const navLinks = [
@@ -128,8 +128,10 @@ export default function Sidebar() {
           background: 'linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.1))',
           border: '1px solid rgba(99,102,241,0.2)',
         }}>
-          <h4 style={{ fontWeight: 600, fontSize: '14px', marginBottom: '4px', color: '#fff' }}>Pro Plan</h4>
-          <p style={{ fontSize: '12px', color: '#a1a1aa', marginBottom: '12px' }}>You have 150 credits remaining</p>
+          <h4 style={{ fontWeight: 600, fontSize: '14px', marginBottom: '4px', color: user?.subscriptionTier === 'PRO' ? '#a855f7' : '#fff' }}>
+            {user?.subscriptionTier === 'PRO' ? 'Pro Plan' : 'Free Plan'}
+          </h4>
+          <p style={{ fontSize: '12px', color: '#a1a1aa', marginBottom: '12px' }}>You have {user?.credits || 0} credits remaining</p>
           <Link 
             href="/billing" 
             style={{
@@ -144,7 +146,7 @@ export default function Sidebar() {
               transition: 'all 0.2s',
             }}
           >
-            Top up credits
+            {user?.subscriptionTier === 'PRO' ? 'Top up credits' : 'Upgrade to Pro'}
           </Link>
         </div>
       </div>

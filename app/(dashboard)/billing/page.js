@@ -94,7 +94,57 @@ export default async function BillingPage() {
         </div>
       </div>
 
-      {/* Row 2: Automatic Payments */}
+      {/* Row 2: Subscription Plan */}
+      <div style={{ ...cardStyle, padding: '28px', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+          <div>
+            <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '8px' }}>Subscription Plan</h3>
+            <p style={{ fontSize: '14px', color: '#a1a1aa' }}>Manage your platform access and limits.</p>
+          </div>
+          <div style={{ padding: '8px 16px', background: dbUser.subscriptionTier === 'PRO' ? 'rgba(168,85,247,0.1)' : 'rgba(255,255,255,0.05)', borderRadius: '8px', border: `1px solid ${dbUser.subscriptionTier === 'PRO' ? 'rgba(168,85,247,0.3)' : 'var(--glass-border)'}` }}>
+            <span style={{ fontWeight: 600, color: dbUser.subscriptionTier === 'PRO' ? '#c084fc' : '#fafafa' }}>
+              Current Plan: {dbUser.subscriptionTier === 'PRO' ? 'PRO' : 'FREE'}
+            </span>
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+          {/* Free Plan Card */}
+          <div style={{ padding: '24px', borderRadius: '12px', border: dbUser.subscriptionTier === 'FREE' ? '2px solid #6366f1' : '1px solid var(--glass-border)', background: dbUser.subscriptionTier === 'FREE' ? 'rgba(99,102,241,0.05)' : 'rgba(255,255,255,0.02)', opacity: dbUser.subscriptionTier === 'PRO' ? 0.6 : 1 }}>
+            <h4 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '8px' }}>Free</h4>
+            <div style={{ fontSize: '24px', fontWeight: 700, marginBottom: '16px' }}>$0 <span style={{ fontSize: '14px', color: '#a1a1aa', fontWeight: 400 }}>/ month</span></div>
+            <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px 0', display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '14px', color: '#d4d4d8' }}>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>✓ Access to basic apps</li>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>✓ Pay per use for credit apps</li>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: 0.5 }}>✗ No access to Pro apps</li>
+            </ul>
+            {dbUser.subscriptionTier === 'FREE' ? (
+              <button disabled style={{ width: '100%', padding: '12px', borderRadius: '8px', background: 'rgba(255,255,255,0.1)', color: '#fff', border: 'none', fontWeight: 600, cursor: 'not-allowed' }}>Current Plan</button>
+            ) : (
+              <button style={{ width: '100%', padding: '12px', borderRadius: '8px', background: 'transparent', color: '#fff', border: '1px solid var(--glass-border)', fontWeight: 600, cursor: 'pointer' }}>Downgrade</button>
+            )}
+          </div>
+
+          {/* Pro Plan Card */}
+          <div style={{ padding: '24px', borderRadius: '12px', border: dbUser.subscriptionTier === 'PRO' ? '2px solid #a855f7' : '1px solid var(--glass-border)', background: dbUser.subscriptionTier === 'PRO' ? 'rgba(168,85,247,0.05)' : 'rgba(255,255,255,0.02)', position: 'relative', overflow: 'hidden' }}>
+            {dbUser.subscriptionTier !== 'PRO' && <div style={{ position: 'absolute', top: '12px', right: '-24px', background: '#a855f7', color: '#fff', fontSize: '10px', fontWeight: 700, padding: '4px 32px', transform: 'rotate(45deg)' }}>RECOMMENDED</div>}
+            <h4 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '8px', color: '#e9d5ff' }}>Pro</h4>
+            <div style={{ fontSize: '24px', fontWeight: 700, marginBottom: '16px' }}>$9.99 <span style={{ fontSize: '14px', color: '#a1a1aa', fontWeight: 400 }}>/ month</span></div>
+            <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px 0', display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '14px', color: '#d4d4d8' }}>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>✓ Access to ALL apps</li>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>✓ Unlimited access to Pro apps</li>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>✓ 100 free credits monthly</li>
+            </ul>
+            {dbUser.subscriptionTier === 'PRO' ? (
+              <button disabled style={{ width: '100%', padding: '12px', borderRadius: '8px', background: 'rgba(168,85,247,0.2)', color: '#e9d5ff', border: '1px solid rgba(168,85,247,0.3)', fontWeight: 600, cursor: 'not-allowed' }}>Current Plan</button>
+            ) : (
+              <button style={{ width: '100%', padding: '12px', borderRadius: '8px', background: 'linear-gradient(135deg, #9333ea, #4f46e5)', color: '#fff', border: 'none', fontWeight: 600, cursor: 'pointer', boxShadow: '0 4px 14px rgba(147,51,234,0.4)' }}>Upgrade to Pro</button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Row 3: Automatic Payments */}
       <div style={{ ...cardStyle, padding: '28px', marginBottom: '24px' }}>
         <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '16px' }}>Automatic Payments</h3>
         <p style={{ fontSize: '14px', color: '#a1a1aa', lineHeight: 1.7, marginBottom: '24px' }}>
@@ -114,7 +164,7 @@ export default async function BillingPage() {
         </div>
       </div>
 
-      {/* Row 3: Transaction History */}
+      {/* Row 4: Transaction History */}
       <div style={cardStyle}>
         <div style={{
           display: 'flex',

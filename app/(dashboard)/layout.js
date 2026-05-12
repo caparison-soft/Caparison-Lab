@@ -40,7 +40,7 @@ export default async function DashboardLayout({ children }) {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: '#fafafa' }}>
-      <Sidebar />
+      <Sidebar user={dbUser} />
       {/* Main content area — pushed right by sidebar width using inline styles 
           so no Tailwind/CSS conflicts can override it */}
       <div style={{ 

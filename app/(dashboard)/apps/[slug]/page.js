@@ -5,7 +5,19 @@ import ExecutionWorkspace from './ExecutionWorkspace';
 
 export default async function AppDetailPage({ params }) {
   const slug = (await params).slug;
+  const supabase = await import('@supabase/ssr').then(mod => mod.createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        getAll() { return require('next/headers').cookies().then(c => c.getAll()); },
+      },
+    }
+  ));
   
+  const { data: { user } } = await supabase.auth.getUser();
+  const dbUser = user ? await prisma.user.findUnique({ where: { supabaseId: user.id } }) : null;
+
   const app = await prisma.app.findUnique({
     where: { slug },
   });
@@ -134,10 +146,17 @@ export default async function AppDetailPage({ params }) {
               </div>
               <h2 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '8px' }}>Ready to start?</h2>
               <p style={{ color: '#a1a1aa', textAlign: 'center', marginBottom: '24px', maxWidth: '400px' }}>This is an external micro-service. It will securely connect to your Caparison Lab account.</p>
-              <a href={app.externalUrl} target="_blank" rel="noopener noreferrer" style={{ padding: '16px 48px', fontSize: '16px', fontWeight: 700, borderRadius: '12px', background: 'var(--gradient-primary)', color: '#ffffff', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: '0 10px 20px -5px rgba(99,102,241,0.5)', transition: 'transform 0.2s' }}>
-                Launch {app.name}
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              </a>
+              {(!dbUser || (dbUser.subscriptionTier !== 'PRO' && app.accessType !== 'CREDIT')) ? (
+                <Link href="/billing" style={{ padding: '16px 48px', fontSize: '16px', fontWeight: 700, borderRadius: '12px', background: 'var(--gradient-primary)', color: '#ffffff', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: '0 10px 20px -5px rgba(99,102,241,0.5)', transition: 'transform 0.2s' }}>
+                  Upgrade to Launch
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </Link>
+              ) : (
+                <a href={app.externalUrl} target="_blank" rel="noopener noreferrer" style={{ padding: '16px 48px', fontSize: '16px', fontWeight: 700, borderRadius: '12px', background: 'var(--gradient-primary)', color: '#ffffff', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: '0 10px 20px -5px rgba(99,102,241,0.5)', transition: 'transform 0.2s' }}>
+                  Launch {app.name}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+              )}
             </div>
           ) : (
             <ExecutionWorkspace app={app} />
