@@ -178,14 +178,7 @@ function AppCard({ app, expanded, onToggle }) {
       </Link>
 
       {/* ── Expandable Description Area ────────────────────── */}
-      <div
-        style={{
-          maxHeight: expanded ? '300px' : '0px',
-          opacity: expanded ? 1 : 0,
-          overflow: 'hidden',
-          transition: 'max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease',
-        }}
-      >
+      {expanded && (
         <div style={{ padding: '20px 20px 8px 20px' }}>
           {/* Stats row */}
           <div
@@ -240,7 +233,7 @@ function AppCard({ app, expanded, onToggle }) {
             {app.shortDesc || app.description}
           </p>
         </div>
-      </div>
+      )}
 
       {/* ── Dropdown Toggle (Chevron) ──────────────────────── */}
       <button
