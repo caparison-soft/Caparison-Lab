@@ -14,8 +14,7 @@ const CATEGORIES = [
 ];
 
 /* ── Individual expandable app card ─────────────────────── */
-function AppCard({ app }) {
-  const [expanded, setExpanded] = useState(false);
+function AppCard({ app, expanded, onToggle }) {
 
   const accessLabel =
     app.accessType === 'CREDIT'
@@ -245,7 +244,7 @@ function AppCard({ app }) {
 
       {/* ── Dropdown Toggle (Chevron) ──────────────────────── */}
       <button
-        onClick={() => setExpanded(!expanded)}
+        onClick={() => onToggle(app.id)}
         style={{
           width: '100%',
           display: 'flex',
@@ -286,6 +285,11 @@ function AppCard({ app }) {
 export default function MarketplaceClient({ initialApps }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('ALL');
+  const [expandedId, setExpandedId] = useState(null);
+
+  const handleToggle = (id) => {
+    setExpandedId((prev) => (prev === id ? null : id));
+  };
 
   // Filter apps
   const filteredApps = initialApps.filter((app) => {
@@ -473,7 +477,7 @@ export default function MarketplaceClient({ initialApps }) {
           }}
         >
           {filteredApps.map((app) => (
-            <AppCard key={app.id} app={app} />
+            <AppCard key={app.id} app={app} expanded={expandedId === app.id} onToggle={handleToggle} />
           ))}
         </div>
       )}
