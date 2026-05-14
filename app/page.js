@@ -4,7 +4,7 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { prisma } from '../lib/prisma';
 import ProfileDropdown from '../components/layout/ProfileDropdown';
-
+import { WaitlistHero } from '../components/ui/waitlist-hero';
 export default async function LandingPage() {
   const cookieStore = await cookies();
   const supabase = createServerClient(
@@ -69,56 +69,7 @@ export default async function LandingPage() {
       </nav>
 
       {/* 2. Hero Section */}
-      <section className={styles.hero}>
-        <div className={styles.circlesBg}>
-          <div className={`${styles.circle} ${styles.circle1}`}></div>
-          <div className={`${styles.circle} ${styles.circle2}`}></div>
-          <div className={`${styles.circle} ${styles.circle3}`}></div>
-          <div className={styles.circle} style={{ margin: '40%', borderColor: 'rgba(99,102,241,0.2)' }}></div>
-          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at center, transparent 0%, #050505 70%)' }}></div>
-        </div>
-
-        <div className={styles.heroContent}>
-          <div className={styles.badge}>
-            <span className={styles.dot}></span>
-            Caparison Lab Platform V1
-          </div>
-          
-          <h1 className={styles.heroTitle}>
-            Access the Best <br />
-            <span className={styles.gradientText}>Video, Image & Audio</span><br />
-            Models in One Platform
-          </h1>
-          
-          <p className={styles.heroSubtitle}>
-            All your AI apps for generation and workflow utilities — fast, affordable, and developer-friendly. Stop paying for dozens of subscriptions.
-          </p>
-          
-          <div className={styles.heroButtons}>
-            <Link href="/explore" className={styles.btnExplore}>Explore Apps</Link>
-          </div>
-        </div>
-
-        {/* Stats Row */}
-        <div className={styles.statsRow} style={{ width: '100%', maxWidth: '1000px', margin: '80px auto 0' }}>
-          <div className={styles.statItem}>
-            <div className={styles.statValue}>99.9%</div>
-            <div className={styles.statLabel}>Uptime</div>
-          </div>
-          <div className={styles.statItem}>
-            <div className={styles.statValue}>&lt; 2s</div>
-            <div className={styles.statLabel}>Gen Time</div>
-          </div>
-          <div className={styles.statItem}>
-            <div className={styles.statValue}>24/7</div>
-            <div className={styles.statLabel}>Support</div>
-          </div>
-          <div className={styles.statItem}>
-            <div className={styles.statValue}>#1</div>
-            <div className={styles.statLabel}>Data Security</div>
-          </div>
-        </div>
-      </section>
+      <WaitlistHero />
 
       {/* 3. Zig Zag Section */}
       <section className={styles.section} style={{ background: 'rgba(0,0,0,0.3)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
