@@ -201,7 +201,7 @@ export const AetherFlowHero = () => {
                     variants={fadeUpVariants}
                     initial="hidden"
                     animate="visible"
-                    className="max-w-3xl mx-auto text-lg md:text-xl text-white mb-16"
+                    className="max-w-3xl mx-auto text-lg md:text-xl text-white mb-24"
                 >
                     Access all the best apps in one powerful platform. <br className="hidden md:block" />
                     Create, work, and manage everything faster without switching between multiple tools.
