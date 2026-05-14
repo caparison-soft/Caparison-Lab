@@ -233,7 +233,7 @@ export const AetherFlowHero = () => {
                             textDecoration: 'none'
                         }}
                     >
-                        Explore the Engine
+                        Explore
                         <ArrowRight style={{ width: '20px', height: '20px' }} />
                     </Link>
                 </motion.div>

@@ -4,9 +4,8 @@
   left: 0;
   right: 0;
   height: 80px;
-  background: rgba(10, 10, 15, 0.8);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: transparent;
+  border-bottom: none;
   z-index: 50;
   display: flex;
   align-items: center;
