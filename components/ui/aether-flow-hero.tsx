@@ -192,7 +192,7 @@ export const AetherFlowHero = () => {
                     initial="hidden"
                     animate="visible"
                     className="font-bold tracking-tighter text-white max-w-6xl mx-auto leading-tight"
-                    style={{ fontSize: 'clamp(4rem, 10vw, 9rem)', marginBottom: '32px' }}
+                    style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', marginBottom: '32px' }}
                 >
                     Caparison Lab
                 </motion.h1>
@@ -216,9 +216,25 @@ export const AetherFlowHero = () => {
                     animate="visible"
                     className="flex justify-center"
                 >
-                    <Link href="/explore" className="px-8 py-4 bg-white text-black font-semibold rounded-lg shadow-lg hover:bg-gray-200 transition-colors duration-300 flex items-center gap-2 mx-auto">
+                    <Link 
+                        href="/explore" 
+                        style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '12px',
+                            backgroundColor: 'white',
+                            color: 'black',
+                            padding: '16px 36px',
+                            fontWeight: '600',
+                            fontSize: '18px',
+                            borderRadius: '4px',
+                            boxShadow: '0 4px 14px 0 rgba(255,255,255,0.3)',
+                            textDecoration: 'none'
+                        }}
+                    >
                         Explore the Engine
-                        <ArrowRight className="h-5 w-5" />
+                        <ArrowRight style={{ width: '20px', height: '20px' }} />
                     </Link>
                 </motion.div>
             </div>
