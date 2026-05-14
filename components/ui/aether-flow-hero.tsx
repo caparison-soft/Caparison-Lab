@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Zap } from 'lucide-react';
 import Link from 'next/link';
+import { Button8 } from './button-8';
 
 // A utility function for class names
 const cn = (...classes: string[]) => classes.filter(Boolean).join(' ');
@@ -216,26 +217,7 @@ export const AetherFlowHero = () => {
                     animate="visible"
                     className="flex justify-center"
                 >
-                    <Link 
-                        href="/explore" 
-                        style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '12px',
-                            backgroundColor: 'white',
-                            color: 'black',
-                            padding: '16px 36px',
-                            fontWeight: '600',
-                            fontSize: '18px',
-                            borderRadius: '4px',
-                            boxShadow: '0 4px 14px 0 rgba(255,255,255,0.3)',
-                            textDecoration: 'none'
-                        }}
-                    >
-                        Explore
-                        <ArrowRight style={{ width: '20px', height: '20px' }} />
-                    </Link>
+                    <Button8 />
                 </motion.div>
             </div>
             
