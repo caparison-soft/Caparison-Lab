@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { Button8 } from './button-8';
+import AnimatedTextCycle from './animated-text-cycle';
 
 // A utility function for class names
 const cn = (...classes: string[]) => classes.filter(Boolean).join(' ');
@@ -223,6 +224,26 @@ export const AetherFlowHero = () => {
             
             {/* Fade out at bottom to match the rest of the page */}
             <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#050505] to-transparent z-10 pointer-events-none"></div>
+
+            {/* Animated Text Cycle - Bottom Right */}
+            <div className="absolute bottom-8 right-8 z-20 hidden md:block opacity-70 hover:opacity-100 transition-opacity">
+                <div className="text-xl font-light text-right text-gray-400">
+                    Your <AnimatedTextCycle 
+                        words={[
+                            "business",
+                            "team",
+                            "workflow",
+                            "productivity",
+                            "projects",
+                            "analytics",
+                            "dashboard",
+                            "platform"
+                        ]}
+                        interval={3000}
+                        className="text-white font-semibold" 
+                    /> <br/> deserves better tools
+                </div>
+            </div>
         </div>
     );
 };
