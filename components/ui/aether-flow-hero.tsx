@@ -186,25 +186,12 @@ export const AetherFlowHero = () => {
             
             {/* Overlay HTML Content */}
             <div className="relative z-10 text-center p-6 mt-16">
-                <motion.div
-                    custom={0}
-                    variants={fadeUpVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 mb-6 backdrop-blur-sm"
-                >
-                    <Zap className="h-4 w-4 text-purple-400" />
-                    <span className="text-sm font-medium text-gray-200">
-                        Dynamic Rendering Engine
-                    </span>
-                </motion.div>
-
                 <motion.h1
                     custom={1}
                     variants={fadeUpVariants}
                     initial="hidden"
                     animate="visible"
-                    className="text-5xl md:text-8xl font-bold tracking-tighter mb-6 text-white max-w-4xl mx-auto leading-tight"
+                    className="text-7xl md:text-[9rem] font-bold tracking-tighter mb-8 text-white max-w-6xl mx-auto leading-tight"
                 >
                     Caparison Lab
                 </motion.h1>
@@ -214,7 +201,7 @@ export const AetherFlowHero = () => {
                     variants={fadeUpVariants}
                     initial="hidden"
                     animate="visible"
-                    className="max-w-3xl mx-auto text-lg md:text-xl text-white mb-10"
+                    className="max-w-3xl mx-auto text-lg md:text-xl text-white mb-16"
                 >
                     Access all the best apps in one powerful platform. <br className="hidden md:block" />
                     Create, work, and manage everything faster without switching between multiple tools.
