@@ -193,9 +193,9 @@ export const AetherFlowHero = () => {
                     animate="visible"
                     className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 mb-6 backdrop-blur-sm"
                 >
-                    <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
-                    <span className="text-sm font-medium text-purple-300">
-                        Caparison Lab Platform V1
+                    <Zap className="h-4 w-4 text-purple-400" />
+                    <span className="text-sm font-medium text-gray-200">
+                        Dynamic Rendering Engine
                     </span>
                 </motion.div>
 
@@ -204,11 +204,9 @@ export const AetherFlowHero = () => {
                     variants={fadeUpVariants}
                     initial="hidden"
                     animate="visible"
-                    className="text-5xl md:text-7xl font-bold tracking-tighter mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-400 max-w-4xl mx-auto leading-tight"
+                    className="text-5xl md:text-8xl font-bold tracking-tighter mb-6 text-white max-w-4xl mx-auto leading-tight"
                 >
-                    Access the Best <br/>
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-fuchsia-400 to-indigo-400">Video, Image & Audio</span><br/>
-                    Models in One Platform
+                    Caparison Lab
                 </motion.h1>
 
                 <motion.p
@@ -216,9 +214,10 @@ export const AetherFlowHero = () => {
                     variants={fadeUpVariants}
                     initial="hidden"
                     animate="visible"
-                    className="max-w-2xl mx-auto text-lg text-gray-400 mb-10"
+                    className="max-w-3xl mx-auto text-lg md:text-xl text-white mb-10"
                 >
-                    All your AI apps for generation and workflow utilities — fast, affordable, and developer-friendly. Stop paying for dozens of subscriptions.
+                    Access all the best apps in one powerful platform. <br className="hidden md:block" />
+                    Create, work, and manage everything faster without switching between multiple tools.
                 </motion.p>
 
                 <motion.div
@@ -228,8 +227,8 @@ export const AetherFlowHero = () => {
                     animate="visible"
                     className="flex justify-center"
                 >
-                    <Link href="/explore" className="px-8 py-4 bg-white text-black font-bold rounded-full shadow-[0_0_40px_rgba(139,92,246,0.3)] hover:shadow-[0_0_60px_rgba(139,92,246,0.5)] transition-all duration-300 flex items-center gap-2">
-                        Explore Apps
+                    <Link href="/explore" className="px-8 py-4 bg-white text-black font-semibold rounded-lg shadow-lg hover:bg-gray-200 transition-colors duration-300 flex items-center gap-2 mx-auto">
+                        Explore the Engine
                         <ArrowRight className="h-5 w-5" />
                     </Link>
                 </motion.div>
