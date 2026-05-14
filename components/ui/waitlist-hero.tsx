@@ -238,7 +238,7 @@ export const WaitlistHero = () => {
         <div
           className="absolute inset-0 z-10 pointer-events-none"
           style={{
-            background: \`linear-gradient(to top, \${colors.baseBg} 10%, rgba(5, 5, 5, 0.6) 50%, transparent 100%)\`,
+            background: `linear-gradient(to top, ${colors.baseBg} 10%, rgba(5, 5, 5, 0.6) 50%, transparent 100%)`,
           }}
         />
 
@@ -269,11 +269,11 @@ export const WaitlistHero = () => {
 
             {/* SUCCESS STATE */}
             <div
-              className={\`absolute inset-0 flex items-center justify-center rounded-full transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] \${
+              className={`absolute inset-0 flex items-center justify-center rounded-full transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${
                 status === "success"
                   ? "opacity-100 scale-100 rotate-x-0 animate-success-pulse animate-success-glow"
                   : "opacity-0 scale-95 -rotate-x-90 pointer-events-none"
-              }\`}
+              }`}
               style={{ backgroundColor: colors.success }}
             >
               {/* Celebration rings */}
@@ -294,7 +294,7 @@ export const WaitlistHero = () => {
                 </>
               )}
               <div
-                className={\`flex items-center gap-2 text-white font-semibold text-lg \${status === "success" ? "animate-bounce-in" : ""}\`}
+                className={`flex items-center gap-2 text-white font-semibold text-lg ${status === "success" ? "animate-bounce-in" : ""}`}
               >
                 <div className="bg-white/20 p-1 rounded-full">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -314,11 +314,11 @@ export const WaitlistHero = () => {
             {/* FORM STATE */}
             <form
               onSubmit={handleSubmit}
-              className={\`relative w-full h-full group transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] \${
+              className={`relative w-full h-full group transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${
                 status === "success"
                   ? "opacity-0 scale-95 rotate-x-90 pointer-events-none"
                   : "opacity-100 scale-100 rotate-x-0"
-              }\`}
+              }`}
             >
               <input
                 type="email"
@@ -331,7 +331,7 @@ export const WaitlistHero = () => {
                 style={{
                   backgroundColor: colors.inputBg,
                   color: colors.textMain,
-                  boxShadow: \`inset 0 0 0 1px \${colors.inputShadow}\`,
+                  boxShadow: `inset 0 0 0 1px ${colors.inputShadow}`,
                 }}
               />
 
