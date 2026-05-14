@@ -191,7 +191,8 @@ export const AetherFlowHero = () => {
                     variants={fadeUpVariants}
                     initial="hidden"
                     animate="visible"
-                    className="text-7xl md:text-[9rem] font-bold tracking-tighter mb-8 text-white max-w-6xl mx-auto leading-tight"
+                    className="font-bold tracking-tighter text-white max-w-6xl mx-auto leading-tight"
+                    style={{ fontSize: 'clamp(4rem, 10vw, 9rem)', marginBottom: '32px' }}
                 >
                     Caparison Lab
                 </motion.h1>
@@ -201,7 +202,8 @@ export const AetherFlowHero = () => {
                     variants={fadeUpVariants}
                     initial="hidden"
                     animate="visible"
-                    className="max-w-3xl mx-auto text-lg md:text-xl text-white mb-24"
+                    className="max-w-3xl mx-auto text-lg md:text-xl text-white"
+                    style={{ marginBottom: '80px' }}
                 >
                     Access all the best apps in one powerful platform. <br className="hidden md:block" />
                     Create, work, and manage everything faster without switching between multiple tools.
