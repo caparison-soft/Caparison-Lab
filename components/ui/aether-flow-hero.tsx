@@ -225,9 +225,9 @@ export const AetherFlowHero = () => {
             {/* Fade out at bottom to match the rest of the page */}
             <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#050505] to-transparent z-10 pointer-events-none"></div>
 
-            {/* Animated Text Cycle - Bottom Right */}
-            <div className="absolute bottom-8 right-8 z-20 hidden md:block opacity-70 hover:opacity-100 transition-opacity">
-                <div className="text-xl font-light text-right text-gray-400">
+            {/* Animated Text Cycle - Bottom Left */}
+            <div className="absolute bottom-8 left-8 z-20 hidden md:block opacity-70 hover:opacity-100 transition-opacity">
+                <div className="text-xl font-light text-left text-gray-400">
                     Your <AnimatedTextCycle 
                         words={[
                             "business",
