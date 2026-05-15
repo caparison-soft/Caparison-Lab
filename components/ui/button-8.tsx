@@ -136,8 +136,8 @@ export const Button8 = () => {
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <Link href="/explore" className="relative flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-500 via-fuchsia-500 via-40% to-indigo-500 px-8 py-4 text-white hover:text-white" style={{ textDecoration: 'none' }}>
-        <Sparkle className="size-6 -translate-y-0.5 animate-sparkle fill-white" />
+      <Link href="/explore" className="relative flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-500 via-fuchsia-500 via-40% to-indigo-500 px-10 py-5 text-white hover:text-white" style={{ textDecoration: 'none' }}>
+        <Sparkle className="size-7 -translate-y-0.5 animate-sparkle fill-white" />
         <Sparkle
           style={{
             animationDelay: "1s",
@@ -159,8 +159,8 @@ export const Button8 = () => {
           className="absolute left-3 top-3 size-1.5 animate-sparkle fill-white"
         />
 
-        <span className="font-semibold text-lg ml-2">Explore</span>
-        <ArrowRight className="h-5 w-5 ml-1" />
+        <span className="font-semibold text-xl ml-2 tracking-wide">Explore</span>
+        <ArrowRight className="h-6 w-6 ml-1" />
       </Link>
       
       {!!particleState && (
