@@ -34,12 +34,16 @@ export default async function ExplorePage() {
         </div>
       </nav>
 
-      <main className="flex-1 pt-32 px-6 pb-20 max-w-7xl mx-auto w-full">
-        <div style={{ marginBottom: '40px' }}>
-          <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '16px' }}>Public Marketplace</h1>
-          <p style={{ color: '#a1a1aa' }}>Discover and explore all available AI apps on Caparison Lab.</p>
-        </div>
-        
+      <main style={{
+        flex: 1,
+        paddingTop: '120px',
+        paddingBottom: '80px',
+        paddingLeft: '24px',
+        paddingRight: '24px',
+        maxWidth: '1280px',
+        margin: '0 auto',
+        width: '100%'
+      }}>
         <MarketplaceClient initialApps={apps} />
       </main>
     </div>
