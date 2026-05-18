@@ -15,7 +15,8 @@ export default async function AppDetailPage({ params }) {
     }
   ));
   
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user;
   const dbUser = user ? await prisma.user.findUnique({ where: { supabaseId: user.id } }) : null;
 
   const app = await prisma.app.findUnique({

@@ -17,7 +17,10 @@ export default async function DashboardPage() {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
+  // Use getSession() (instant cookie read) instead of getUser() (network call).
+  // The middleware already validated the user, so this is safe.
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user;
 
   let dbUser = null;
   if (user) {
