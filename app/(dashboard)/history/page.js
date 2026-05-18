@@ -2,6 +2,7 @@ import { createClient } from '../../../lib/supabase/server';
 import { prisma } from '../../../lib/prisma';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import LocalDate from '../../../components/ui/local-date';
 
 export const metadata = {
   title: 'Generation History | Caparison Lab',
@@ -77,7 +78,7 @@ export default async function HistoryPage() {
                         <span className="font-medium text-white">{gen.app.name}</span>
                       </div>
                     </td>
-                    <td>{new Date(gen.createdAt).toLocaleDateString()} at {new Date(gen.createdAt).toLocaleTimeString()}</td>
+                    <td><LocalDate iso={gen.createdAt.toISOString()} /></td>
                     <td>
                       <span className={`badge ${
                         gen.status === 'COMPLETED' ? 'badge-success' : 
